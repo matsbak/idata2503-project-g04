@@ -1,16 +1,15 @@
-# project
+# IDATA2503 Project G04
 
-A new Flutter project.
+Project in course
+[IDATA2503 Mobile applications](https://www.ntnu.edu/studies/courses/IDATA2503#tab=omEmnet) at
+[NTNU](https://www.ntnu.edu/). The project is done by group 4.
 
-## Getting Started
+### How to run
 
-This project is a starting point for a Flutter application.
+1. Open the project folder in your preferred IDE
+2. Open an Android emulator or connect to an Android device etc.
+3. Run the command ```flutter run```
 
-A few resources to get you started if this is your first Flutter project:
+#### Troubleshooting
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If the project fails to build, repeat step 3.
