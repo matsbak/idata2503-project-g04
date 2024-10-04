@@ -21,6 +21,13 @@ class _ProjectState extends State<Project> {
       rating: 5.0,
       genre: Genre.scienceFiction,
     ),
+    Movie(
+      title: 'Wall-E',
+      description:
+          'A robot who is responsible for cleaning a waste-covered Earth meets another robot and falls in love with her. Together, they set out on a journey that will alter the fate of mankind.',
+      rating: 5.0,
+      genre: Genre.scienceFiction,
+    ),
   ];
 
   @override
