@@ -10,6 +10,7 @@ class MyListItem extends StatelessWidget {
 
   final Movie movie;
 
+  // TODO Add padding on card without affecting image
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -17,38 +18,38 @@ class MyListItem extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 16.0,
-        ),
-        child: Row(
-          children: [
-            Text(
-              movie.title,
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Row(
+        children: [
+          Image.asset(
+            'assets/images/wall-e.jpg',
+            width: 80.0,
+            height: 80.0,
+            fit: BoxFit.cover,
+          ),
+          Text(
+            movie.title,
+            style: const TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
             ),
-            const Spacer(),
-            const Row(
-              children: [
-                Icon(Icons.star),
-                SizedBox(width: 2.0),
-                Text(
-                  '4.5',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+          ),
+          const Spacer(),
+          const Row(
+            children: [
+              Icon(Icons.star_border),
+              SizedBox(width: 2.0),
+              Text(
+                '4.5',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
-            const Spacer(),
-            const Icon(Icons.edit),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          const Icon(Icons.edit),
+        ],
       ),
     );
   }

@@ -17,18 +17,29 @@ class WatchlistItem extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 16.0,
-        ),
-        child: Text(
-          movie.title,
-          style: const TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+      clipBehavior: Clip.hardEdge,
+      child: Row(
+        children: [
+          Image.asset(
+            'assets/images/wall-e.jpg',
+            width: 80.0,
+            height: 80.0,
+            fit: BoxFit.cover,
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
+            child: Text(
+              movie.title,
+              style: const TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
