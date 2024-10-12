@@ -35,19 +35,16 @@ class _ProjectState extends State<Project> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             'MOVIE RATER',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 60, 60, 60),
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
         body: Container(
           decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 80, 80, 80),
+            color: Colors.white,
           ),
           child: MovieList(movies: _registeredMovies),
         ),
