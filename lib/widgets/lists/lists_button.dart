@@ -21,7 +21,7 @@ class ListsButton extends StatelessWidget {
         onPressed: onClick,
         style: FilledButton.styleFrom(
           backgroundColor: isActive
-              ? const Color.fromARGB(255, 247, 202, 255)
+              ? Theme.of(context).colorScheme.inversePrimary
               : const Color.fromARGB(255, 222, 222, 222),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
