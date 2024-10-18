@@ -22,6 +22,7 @@ class _ListsScreenState extends State<ListsScreen> {
           'A robot who is responsible for cleaning a waste-covered Earth meets another robot and falls in love with her. Together, they set out on a journey that will alter the fate of mankind.',
       rating: 5.0,
       genre: Genre.scienceFiction,
+      posterUrl: '',
     ),
   ];
 
@@ -67,10 +68,8 @@ class _ListsScreenState extends State<ListsScreen> {
               ),
             ],
           ),
-          if (_currentList == 'watchlist')
-            Watchlist(movies: _registeredMovies),
-          if (_currentList == 'mylist')
-            MyList(movies: _registeredMovies),
+          if (_currentList == 'watchlist') Watchlist(movies: _registeredMovies),
+          if (_currentList == 'mylist') MyList(movies: _registeredMovies),
         ],
       ),
     );

@@ -24,10 +24,12 @@ class Movie {
     required this.description,
     required this.rating,
     required this.genre,
+    required this.posterUrl,
   });
 
   final String title;
   final String description;
   final double rating;
   final Genre genre;
+  final String posterUrl;
 }

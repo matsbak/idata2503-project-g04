@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/screens/explore_screen.dart';
 import 'package:project/widgets/movie/movie_list.dart';
 
 class Project extends StatefulWidget {
@@ -20,6 +21,7 @@ class _ProjectState extends State<Project> {
           'A robot who is responsible for cleaning a waste-covered Earth meets another robot and falls in love with her. Together, they set out on a journey that will alter the fate of mankind.',
       rating: 5.0,
       genre: Genre.scienceFiction,
+      posterUrl: '',
     ),
     Movie(
       title: 'Wall-E',
@@ -27,6 +29,7 @@ class _ProjectState extends State<Project> {
           'A robot who is responsible for cleaning a waste-covered Earth meets another robot and falls in love with her. Together, they set out on a journey that will alter the fate of mankind.',
       rating: 5.0,
       genre: Genre.scienceFiction,
+      posterUrl: '',
     ),
   ];
 
@@ -47,6 +50,7 @@ class _ProjectState extends State<Project> {
             color: Colors.white,
           ),
           child: MovieList(movies: _registeredMovies),
+          //child: ExploreScreen(movies: _registeredMovies),
         ),
       ),
     );
