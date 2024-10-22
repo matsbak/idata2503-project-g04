@@ -24,6 +24,8 @@ class ExploreScreen extends StatelessWidget {
         dummyMovies.where((movie) => movie.genre == Genre.comedy).toList();
     final horrorMovies =
         dummyMovies.where((movie) => movie.genre == Genre.horror).toList();
+    final dramaMovies =
+        dummyMovies.where((movie) => movie.genre == Genre.drama).toList();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -34,6 +36,7 @@ class ExploreScreen extends StatelessWidget {
           buildGenreSection('Sci.Fi', sciFiMovies),
           buildGenreSection('Comedy', comedyMovies),
           buildGenreSection('Horror', horrorMovies),
+          buildGenreSection('Drama', dramaMovies),
         ],
       ),
     );

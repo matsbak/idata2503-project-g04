@@ -127,4 +127,13 @@ var dummyMovies = [
     posterUrl:
         'https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_.jpg',
   ),
+  Movie(
+    title: 'Mamma Mia!',
+    description:
+        'Donna, an independent hotelier, is preparing for her daughters wedding with the help of two old friends. Meanwhile Sophie, the spirited bride, has a plan. She invites three men from her mothers past in hope of meeting her real father.',
+    rating: 4.0,
+    genre: Genre.drama,
+    posterUrl:
+        'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_.jpg',
+  ),
 ];

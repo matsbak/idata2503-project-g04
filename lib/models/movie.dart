@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum Genre { action, fantasy, scienceFiction, comedy, horror }
+enum Genre { action, fantasy, scienceFiction, comedy, horror, drama }
 
 const genreText = {
   Genre.action: 'Action',
@@ -8,6 +8,7 @@ const genreText = {
   Genre.scienceFiction: 'Science fiction',
   Genre.comedy: 'Comedy',
   Genre.horror: 'Horror',
+  Genre.drama: "Drama",
 };
 
 const genreIcons = {
