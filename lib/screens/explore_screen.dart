@@ -11,35 +11,29 @@ class ExploreScreen extends StatelessWidget {
 
   final List<Movie> movies;
 
-  // Group movies by genre
-  Map<Genre, List<Movie>> _groupMoviesByGenre() {
-    Map<Genre, List<Movie>> groupedMovies = {};
-    for (var movie in movies) {
-      if (groupedMovies[movie.genre] == null) {
-        groupedMovies[movie.genre] = [];
-      }
-      groupedMovies[movie.genre]!.add(movie);
-    }
-    return groupedMovies;
-  }
-
   @override
   Widget build(BuildContext context) {
     final actionMovies =
         dummyMovies.where((movie) => movie.genre == Genre.action).toList();
+    final fantacyMovies =
+        dummyMovies.where((movie) => movie.genre == Genre.fantasy).toList();
     final sciFiMovies = dummyMovies
         .where((movie) => movie.genre == Genre.scienceFiction)
         .toList();
     final comedyMovies =
         dummyMovies.where((movie) => movie.genre == Genre.comedy).toList();
+    final horrorMovies =
+        dummyMovies.where((movie) => movie.genre == Genre.horror).toList();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
           buildGenreSection('Action', actionMovies),
+          buildGenreSection('Fantacy', fantacyMovies),
           buildGenreSection('Sci.Fi', sciFiMovies),
           buildGenreSection('Comedy', comedyMovies),
+          buildGenreSection('Horror', horrorMovies),
         ],
       ),
     );
