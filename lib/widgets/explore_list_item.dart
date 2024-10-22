@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
+import 'package:project/screens/movie_detail_screen.dart';
 
 class ExploreListItem extends StatelessWidget {
   const ExploreListItem({
@@ -11,10 +12,17 @@ class ExploreListItem extends StatelessWidget {
   final Movie movie;
   // final void Function() onSelectedMovie;
 
+  void _onSelectedMovie(BuildContext context, Movie movie) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (ctx) => MovieDetailScreen(movie: movie)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // onTap: onSelectedMovie,
+      onTap: () => _onSelectedMovie(context, movie),
       borderRadius: BorderRadius.circular(10),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -33,7 +41,7 @@ class ExploreListItem extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               movie.title,
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
               overflow: TextOverflow.ellipsis,
             )
           ],
