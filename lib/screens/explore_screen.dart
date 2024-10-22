@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/data/dummy_data.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/widgets/explore_list_item.dart';
 
@@ -24,45 +25,50 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final groupedMovies = _groupMoviesByGenre();
+    final actionMovies =
+        dummyMovies.where((movie) => movie.genre == Genre.action).toList();
+    final sciFiMovies = dummyMovies
+        .where((movie) => movie.genre == Genre.scienceFiction)
+        .toList();
+    final comedyMovies =
+        dummyMovies.where((movie) => movie.genre == Genre.comedy).toList();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Explore Movies')),
-      body: ListView(
-        children: groupedMovies.entries.map((entry) {
-          final genre = entry.key;
-          final genreMovies = entry.value;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                child: Text(
-                  genre.toString().split('.').last.toUpperCase(), // Genre name
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                height: 200.0, // Adjust height to fit your design
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: genreMovies.length,
-                  itemBuilder: (context, index) {
-                    return ExploreListItem(
-                      movie: movies[index],
-                      posterUrl: genreMovies[index].posterUrl,
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        }).toList(),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(
+        children: [
+          buildGenreSection('Action', actionMovies),
+          buildGenreSection('Sci.Fi', sciFiMovies),
+          buildGenreSection('Comedy', comedyMovies),
+        ],
       ),
+    );
+  }
+
+  Widget buildGenreSection(String genreTitle, List<Movie> movies) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            genreTitle,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Container(
+          height: 200,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: movies.length,
+              itemBuilder: (ctx, index) {
+                return ExploreListItem(movie: movies[index]);
+              }),
+        )
+      ],
     );
   }
 }
