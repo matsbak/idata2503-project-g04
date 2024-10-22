@@ -49,7 +49,6 @@ class _TabsScreenState extends State<TabsScreen> {
     Widget activePage = MovieList(movies: _registeredMovies);
 
     if (_selectedPageIndex == 1) {
-      // TODO Add explore screen widget
       activePage = ExploreScreen(movies: _registeredMovies);
     } else if (_selectedPageIndex == 2) {
       // TODO Add search screen widget
