@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/widgets/movie/movie_item.dart';
 
@@ -15,11 +16,29 @@ class MovieList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10.0),
-      child: ListView.builder(
-        itemCount: movies.length,
-        itemBuilder: (ctx, index) => MovieItem(
-          movie: movies[index],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Trending / featured',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10.0),
+          Expanded(
+            child: ListView.builder(
+              itemCount: movies.length,
+              itemBuilder: (ctx, index) => Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: MovieItem(
+                  movie: movies[index],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
+import 'package:project/widgets/starbuilder.dart';
 
 class MovieDetailScreen extends StatelessWidget {
   const MovieDetailScreen({
@@ -63,7 +64,7 @@ class MovieDetailScreen extends StatelessWidget {
                             fontSize: 18, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 10),
-                      _buildStarRating(movie.rating),
+                      StarBuilder(rating: movie.rating),
                     ],
                   ),
                   const Spacer(),
@@ -92,32 +93,4 @@ class MovieDetailScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildStarRating(double rating) {
-  int fullStars = rating.floor();
-  bool hasHalfStar = (rating - fullStars) >= 0.5;
-  List<Widget> stars = [];
-  for (int i = 0; i < fullStars; i++) {
-    stars.add(const Icon(
-      Icons.star,
-      color: Colors.amber,
-      size: 24,
-    ));
-  }
-  if (hasHalfStar) {
-    stars.add(const Icon(
-      Icons.star_half,
-      color: Colors.amber,
-      size: 24,
-    ));
-  }
-  while (stars.length < 5) {
-    stars.add(const Icon(
-      Icons.star_border,
-      color: Colors.amber,
-      size: 24,
-    ));
-  }
-  return Row(children: stars);
 }

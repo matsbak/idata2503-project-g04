@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/widgets/starbuilder.dart';
 
 class MovieItem extends StatelessWidget {
   const MovieItem({
@@ -23,9 +24,9 @@ class MovieItem extends StatelessWidget {
           Expanded(
             flex: 3, // Set flex for the image, adjust as needed
             child: Image.asset(
-              'assets/images/cars2.jpg',
+              'assets/images/cars2.jpg', //ToDO add a better image
               fit: BoxFit.cover, // Fills the container with the image
-              height: 150, // Adjust height of the image
+              height: 100, // Adjust height of the image
             ),
           ),
           Expanded(
@@ -39,17 +40,14 @@ class MovieItem extends StatelessWidget {
                   Text(
                     movie.title.toUpperCase(),
                     style: const TextStyle(
-                      fontSize: 20.0,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10.0),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Color.fromARGB(255, 230, 212, 50),
-                      ),
+                      StarBuilder(rating: movie.rating),
                       Text(
                         movie.rating.toString(),
                         style: const TextStyle(
