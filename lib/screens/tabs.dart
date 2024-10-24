@@ -4,6 +4,7 @@ import 'package:project/models/movie.dart';
 import 'package:project/screens/explore_screen.dart';
 import 'package:project/screens/lists.dart';
 import 'package:project/widgets/movie/movie_list.dart';
+import 'package:project/screens/search_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -33,8 +34,7 @@ class _TabsScreenState extends State<TabsScreen> {
     if (_selectedPageIndex == 1) {
       activePage = ExploreScreen(movies: _registeredMovies);
     } else if (_selectedPageIndex == 2) {
-      // TODO Add search screen widget
-      // activePage = const SearchScreen();
+      activePage = const SearchScreen();
     } else if (_selectedPageIndex == 3) {
       activePage = const ListsScreen();
     }
