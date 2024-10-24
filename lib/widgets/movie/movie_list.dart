@@ -29,6 +29,7 @@ class MovieList extends StatelessWidget {
           const SizedBox(height: 10.0),
           Expanded(
             child: ListView.builder(
+              shrinkWrap: true,
               itemCount: movies.length,
               itemBuilder: (ctx, index) => Padding(
                 padding: const EdgeInsets.all(4.0),
