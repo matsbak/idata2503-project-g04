@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Widget to create the rating stars a movie has. Based on the rating,
+/// the widget represents the rating in the form of stars or halv-stars
 class StarBuilder extends StatelessWidget {
   final double rating;
 

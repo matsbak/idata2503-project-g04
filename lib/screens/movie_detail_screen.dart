@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/widgets/starbuilder.dart';
 
+/// A screen representing the movie details screen. This screen shows a movie
+/// with every detail the movie has.
 class MovieDetailScreen extends StatelessWidget {
   const MovieDetailScreen({
     super.key,
@@ -15,6 +17,7 @@ class MovieDetailScreen extends StatelessWidget {
     return movie.genre.name[0].toUpperCase() + movie.genre.name.substring(1);
   }
 
+  /// Adds a movie to the watch list
   void _addToWatchList() {
     //TODO: Add logic to add a movie to watchlist
   }

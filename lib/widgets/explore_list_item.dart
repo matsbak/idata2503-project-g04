@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/screens/movie_detail_screen.dart';
 
+/// A widget that shows movies as images and movie title.
 class ExploreListItem extends StatelessWidget {
   const ExploreListItem({
     super.key,
     required this.movie,
-    // required this.onSelectedMovie,
   });
 
   final Movie movie;
-  // final void Function() onSelectedMovie;
 
+  /// Pushes a new screen ontop of the existing screen
   void _onSelectedMovie(BuildContext context, Movie movie) {
     Navigator.push(
       context,

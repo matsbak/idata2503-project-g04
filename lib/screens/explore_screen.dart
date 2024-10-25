@@ -3,6 +3,8 @@ import 'package:project/data/dummy_data.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/widgets/explore_list_item.dart';
 
+/// A screen representing the explore section of the app. The explore screen
+/// is to show the user with the different movies based on category.
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({
     super.key,
@@ -42,6 +44,7 @@ class ExploreScreen extends StatelessWidget {
     );
   }
 
+  /// A widget that builds a genre section with every movie in that given genre.
   Widget buildGenreSection(String genreTitle, List<Movie> movies) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +59,7 @@ class ExploreScreen extends StatelessWidget {
             ),
           ),
         ),
-        Container(
+        SizedBox(
           height: 200,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -64,7 +67,7 @@ class ExploreScreen extends StatelessWidget {
               itemBuilder: (ctx, index) {
                 return ExploreListItem(movie: movies[index]);
               }),
-        )
+        ),
       ],
     );
   }
