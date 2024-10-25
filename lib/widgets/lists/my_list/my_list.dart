@@ -16,7 +16,7 @@ class MyList extends StatelessWidget {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(
-          vertical: 16.0,
+          vertical: 24.0,
         ),
         child: ListView.builder(
           itemCount: movies.length,
