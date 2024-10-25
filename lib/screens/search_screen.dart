@@ -15,6 +15,12 @@ class _SearchScreenState extends State<SearchScreen> {
   List<Movie> _searchResults = [];
   final List<Movie> _dummyMovies = dummyMovies;
 
+  @override
+  void initState() {
+    _searchResults = _dummyMovies;
+    super.initState();
+  }
+
   void _performSearch(String query) {
     setState(() {
       _searchResults = _dummyMovies
@@ -57,10 +63,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 final movie = _searchResults[index];
                 return Card(
                   child: ListTile(
+                    leading: movie.posterUrl.isNotEmpty
+                        ? Image.network(movie.posterUrl, width: 50, height: 50, fit: BoxFit.cover)
+                        : null,
                     title: Text(movie.title),
-                    subtitle: Text(movie.description),
                     onTap: () => _selectMovie(movie),
-                  ),
+                  )
                 );
               },
             ),
