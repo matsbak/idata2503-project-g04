@@ -33,26 +33,26 @@ class ExploreScreen extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
-          buildGenreSection('Action', actionMovies),
-          buildGenreSection('Fantacy', fantacyMovies),
-          buildGenreSection('Sci.Fi', sciFiMovies),
-          buildGenreSection('Comedy', comedyMovies),
-          buildGenreSection('Horror', horrorMovies),
-          buildGenreSection('Drama', dramaMovies),
+          buildGenreSection(Genre.action, actionMovies),
+          buildGenreSection(Genre.fantasy, fantacyMovies),
+          buildGenreSection(Genre.scienceFiction, sciFiMovies),
+          buildGenreSection(Genre.comedy, comedyMovies),
+          buildGenreSection(Genre.horror, horrorMovies),
+          buildGenreSection(Genre.drama, dramaMovies),
         ],
       ),
     );
   }
 
   /// A widget that builds a genre section with every movie in that given genre.
-  Widget buildGenreSection(String genreTitle, List<Movie> movies) {
+  Widget buildGenreSection(Genre genre, List<Movie> movies) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
-            genreTitle,
+            genreText[genre] ?? '',
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

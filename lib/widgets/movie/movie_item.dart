@@ -34,8 +34,8 @@ class MovieItem extends StatelessWidget {
           children: [
             Expanded(
               flex: 3, // Set flex for the image, adjust as needed
-              child: Image.asset(
-                'assets/images/cars2.jpg', //ToDO add a better image
+              child: Image.network(
+                movie.posterUrl, //ToDO add a better image
                 fit: BoxFit.cover, // Fills the container with the image
                 height: 100, // Adjust height of the image
               ),
