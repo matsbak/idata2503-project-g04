@@ -24,7 +24,8 @@ class _SearchScreenState extends State<SearchScreen> {
   void _performSearch(String query) {
     setState(() {
       _searchResults = _dummyMovies
-          .where((movie) => movie.title.toLowerCase().contains(query.toLowerCase()))
+          .where((movie) =>
+              movie.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -32,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _selectMovie(Movie movie) {
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (ctx) => MovieDetailScreen(movie: movie),
+        builder: (ctx) => MovieDetailScreen(movie: movie),
       ),
     );
   }
@@ -49,8 +50,15 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
+              style: const TextStyle(
+                color: Colors.white,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Search',
+                labelStyle: TextStyle(
+                  color: Colors.white,
+                ),
+                suffixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
               onChanged: _performSearch,
@@ -62,14 +70,15 @@ class _SearchScreenState extends State<SearchScreen> {
               itemBuilder: (ctx, index) {
                 final movie = _searchResults[index];
                 return Card(
-                  child: ListTile(
-                    leading: movie.posterUrl.isNotEmpty
-                        ? Image.network(movie.posterUrl, width: 50, height: 50, fit: BoxFit.cover)
-                        : null,
-                    title: Text(movie.title),
-                    onTap: () => _selectMovie(movie),
-                  )
-                );
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    child: ListTile(
+                      leading: movie.posterUrl.isNotEmpty
+                          ? Image.network(movie.posterUrl,
+                              width: 50, height: 50, fit: BoxFit.cover)
+                          : null,
+                      title: Text(movie.title),
+                      onTap: () => _selectMovie(movie),
+                    ));
               },
             ),
           ),

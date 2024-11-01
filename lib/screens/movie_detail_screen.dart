@@ -30,6 +30,7 @@ class MovieDetailScreen extends StatelessWidget {
           movie.title,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
         ),
         centerTitle: true,
@@ -53,18 +54,23 @@ class MovieDetailScreen extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 movie.title,
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               const SizedBox(height: 10),
               Row(
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Rating: ${movie.rating}',
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white),
                       ),
                       const SizedBox(height: 10),
                       StarBuilder(rating: movie.rating),
@@ -75,20 +81,30 @@ class MovieDetailScreen extends StatelessWidget {
                     onPressed: () {
                       _addToWatchList();
                     },
-                    child: const Text('Add to Watchlist'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondaryContainer),
+                    child: const Text(
+                      'Add to Watchlist',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
               Text(
                 'Genre: $genreText',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
               ),
               const SizedBox(height: 20),
               Text(
                 movie.description,
-                style: const TextStyle(fontSize: 16),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
             ],
           ),

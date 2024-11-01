@@ -32,6 +32,7 @@ class _MyListItemState extends State<MyListItem> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       clipBehavior: Clip.hardEdge,
+      color: Theme.of(context).colorScheme.secondaryContainer,
       child: InkWell(
         onTap: () {
           _openMyListOverlay(widget.movie);
@@ -56,6 +57,7 @@ class _MyListItemState extends State<MyListItem> {
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const Spacer(),
@@ -68,6 +70,7 @@ class _MyListItemState extends State<MyListItem> {
                           style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ],

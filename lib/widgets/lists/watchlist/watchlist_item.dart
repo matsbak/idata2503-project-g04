@@ -32,6 +32,7 @@ class _WatchlistItemState extends State<WatchlistItem> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       clipBehavior: Clip.hardEdge,
+      color: Theme.of(context).colorScheme.secondaryContainer,
       child: InkWell(
         onTap: () {
           _openWatchlistOverlay(widget.movie);
@@ -56,6 +57,7 @@ class _WatchlistItemState extends State<WatchlistItem> {
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const Spacer(),

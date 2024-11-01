@@ -51,16 +51,20 @@ class _TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Spacer(),
+            const Spacer(),
             Text(
               'Movie Rater'.toUpperCase(),
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
             ),
             const Spacer(),
             IconButton(
               icon: const Icon(Icons.account_circle),
+              style: IconButton.styleFrom(
+                foregroundColor: Colors.white,
+              ),
               onPressed: _navigateToProfile, // Navigate to profile page
             ),
           ],
@@ -68,34 +72,34 @@ class _TabsScreenState extends State<TabsScreen> {
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 35, 30, 30),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         currentIndex: _selectedPageIndex < 4 ? _selectedPageIndex : 0,
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home_outlined, color: Colors.black),
+            icon: const Icon(Icons.home_outlined, color: Colors.white),
             label: 'Home',
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.explore_outlined, color: Colors.black),
+            icon: const Icon(Icons.explore_outlined, color: Colors.white),
             label: 'Explore',
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.search_outlined, color: Colors.black),
+            icon: const Icon(Icons.search_outlined, color: Colors.white),
             label: 'Search',
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.list_outlined, color: Colors.black),
+            icon: const Icon(Icons.list_outlined, color: Colors.white),
             label: 'My List',
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ),
         ],
-        selectedItemColor: Colors.black,
+        selectedItemColor: Colors.white,
       ),
     );
   }

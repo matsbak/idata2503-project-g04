@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/widgets/movie/movie_item.dart';
 
@@ -24,6 +23,7 @@ class MovieList extends StatelessWidget {
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 10.0),

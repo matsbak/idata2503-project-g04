@@ -30,6 +30,7 @@ class MovieItem extends StatelessWidget {
         ),
         clipBehavior: Clip
             .antiAlias, // Clips the child widgets to the card's border radius
+        color: Theme.of(context).colorScheme.secondaryContainer,
         child: Row(
           children: [
             Expanded(
@@ -53,6 +54,7 @@ class MovieItem extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 10.0),

@@ -40,6 +40,7 @@ class EditWatchlistItem extends StatelessWidget {
                 movie.title,
                 style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
               ),
               const SizedBox(
@@ -53,21 +54,27 @@ class EditWatchlistItem extends StatelessWidget {
                   ),
                   Text(
                     movie.rating.toString(),
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Colors.white,
+                        ),
                   ),
                 ],
               ),
               const SizedBox(
                 height: 8.0,
               ),
-              Text(movie.description),
+              Text(
+                movie.description,
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer),
+              ),
             ],
           ),
           const Spacer(),
           FilledButton.tonal(
             onPressed: () {},
             style: FilledButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 242, 108, 98),
+              backgroundColor: const Color.fromARGB(255, 225, 55, 45),
             ),
             child: const Row(
               children: [
