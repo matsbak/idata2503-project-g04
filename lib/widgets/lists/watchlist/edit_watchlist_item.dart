@@ -4,26 +4,49 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
 
-class EditWatchlistItem extends ConsumerWidget {
+class EditWatchlistItem extends ConsumerStatefulWidget {
   const EditWatchlistItem(this.movie, {super.key});
 
   final Movie movie;
 
-  void _removeFromWatchlist(BuildContext context, WidgetRef ref) {
-    ref.read(watchlistProvider.notifier).removeFromWatchlist(movie);
+  @override
+  ConsumerState<EditWatchlistItem> createState() {
+    return _EditWatchlistItemState();
+  }
+}
+
+class _EditWatchlistItemState extends ConsumerState<EditWatchlistItem> {
+  bool isAddedToMyList = false;
+
+  void _removeFromWatchlist(BuildContext context, String title) {
+    ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
 
     Navigator.pop(context);
 
-    final String movieTitle = movie.title;
-
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$movieTitle removed from watchlist'),
+      content: Text('$title removed from watchlist'),
     ));
   }
 
+  void _addToMyList() {
+    ref.read(myListProvider.notifier).addToMyList(widget.movie);
+    ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+    setState(() {
+      isAddedToMyList = true;
+    });
+  }
+
+  void _removeFromMyList() {
+    ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
+    ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+    setState(() {
+      isAddedToMyList = false;
+    });
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(
         top: 20.0,
@@ -56,7 +79,7 @@ class EditWatchlistItem extends ConsumerWidget {
               ),
               clipBehavior: Clip.hardEdge,
               child: Image.network(
-                movie.posterUrl,
+                widget.movie.posterUrl,
                 width: 250.0,
               ),
             ),
@@ -65,7 +88,7 @@ class EditWatchlistItem extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                movie.title,
+                widget.movie.title,
                 style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -81,7 +104,7 @@ class EditWatchlistItem extends ConsumerWidget {
                     width: 4.0,
                   ),
                   Text(
-                    movie.rating.toString(),
+                    widget.movie.rating.toString(),
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           color: Colors.white,
                         ),
@@ -92,11 +115,46 @@ class EditWatchlistItem extends ConsumerWidget {
                 height: 8.0,
               ),
               Text(
-                movie.description,
+                widget.movie.description,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 16.0,
+          ),
+          Text('Done watching?',
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  )),
+          const SizedBox(
+            height: 8.0,
+          ),
+          FilledButton(
+            onPressed: isAddedToMyList
+                ? () {
+                    _removeFromMyList();
+                  }
+                : () {
+                    _addToMyList();
+                  },
+            child: SizedBox(
+              width: 125.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  isAddedToMyList
+                      ? const Icon(Icons.check)
+                      : const Icon(Icons.add),
+                  const SizedBox(
+                    width: 2.0,
+                  ),
+                  const Text('Add to my list'),
+                ],
+              ),
+            ),
           ),
           const Spacer(),
           Container(
@@ -105,7 +163,7 @@ class EditWatchlistItem extends ConsumerWidget {
             ),
             child: FilledButton.tonal(
               onPressed: () {
-                _removeFromWatchlist(context, ref);
+                _removeFromWatchlist(context, widget.movie.title);
               },
               style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.errorContainer,

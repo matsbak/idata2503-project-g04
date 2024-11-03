@@ -37,7 +37,7 @@ class MovieDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final watchlist = ref.watch(watchlistProvider);
-    final isInWatchLsit = watchlist.contains(movie);
+    final isInWatchList = watchlist.contains(movie);
 
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +94,7 @@ class MovieDetailScreen extends ConsumerWidget {
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () {
-                      if (isInWatchLsit) {
+                      if (isInWatchList) {
                         _removeFromWatchList(context, ref);
                       } else {
                         _addToWatchList(context, ref);
@@ -104,7 +104,7 @@ class MovieDetailScreen extends ConsumerWidget {
                         backgroundColor:
                             Theme.of(context).colorScheme.secondaryContainer),
                     child: Text(
-                      isInWatchLsit
+                      isInWatchList
                           ? 'Remove from Watchlist'
                           : 'Add to Watchlist',
                       style: const TextStyle(color: Colors.white),
