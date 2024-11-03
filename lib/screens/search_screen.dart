@@ -40,14 +40,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
             child: TextField(
               controller: _searchController,
               style: const TextStyle(
@@ -64,26 +62,31 @@ class _SearchScreenState extends State<SearchScreen> {
               onChanged: _performSearch,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (ctx, index) {
-                final movie = _searchResults[index];
-                return Card(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    child: ListTile(
-                      leading: movie.posterUrl.isNotEmpty
-                          ? Image.network(movie.posterUrl,
-                              width: 50, height: 50, fit: BoxFit.cover)
-                          : null,
-                      title: Text(movie.title),
-                      onTap: () => _selectMovie(movie),
-                    ));
-              },
-            ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _searchResults.length,
+            itemBuilder: (ctx, index) {
+              final movie = _searchResults[index];
+              return Card(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                child: ListTile(
+                  leading: movie.posterUrl.isNotEmpty
+                      ? Image.network(
+                          movie.posterUrl,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  title: Text(movie.title),
+                  onTap: () => _selectMovie(movie),
+                ),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
