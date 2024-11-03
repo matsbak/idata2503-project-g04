@@ -16,7 +16,7 @@ class Watchlist extends StatelessWidget {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(
-          vertical: 24.0,
+          vertical: 4.0,
         ),
         child: ListView.builder(
           itemCount: movies.length,

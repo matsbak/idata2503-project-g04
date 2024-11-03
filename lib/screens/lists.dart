@@ -39,8 +39,6 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final watchlistMovies = ref.watch(watchlistProvider);
-
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -60,8 +58,8 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
               ),
             ],
           ),
-          if (_currentList == 'watchlist') Watchlist(movies: watchlistMovies),
-          if (_currentList == 'mylist') MyList(movies: watchlistMovies),
+          if (_currentList == 'watchlist') Watchlist(movies: ref.watch(watchlistProvider)),
+          if (_currentList == 'mylist') MyList(movies: ref.watch(myListProvider)),
         ],
       ),
     );

@@ -27,7 +27,9 @@ class _MyListItemState extends State<MyListItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(0.0),
+      margin: const EdgeInsets.symmetric(
+        vertical: 4.0,
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),

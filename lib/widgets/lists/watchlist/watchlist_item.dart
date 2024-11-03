@@ -27,7 +27,9 @@ class _WatchlistItemState extends State<WatchlistItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(0.0),
+      margin: const EdgeInsets.symmetric(
+        vertical: 4.0,
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -60,8 +62,6 @@ class _WatchlistItemState extends State<WatchlistItem> {
                         color: Colors.white,
                       ),
                     ),
-                    const Spacer(),
-                    const Icon(Icons.edit),
                   ],
                 ),
               ),
