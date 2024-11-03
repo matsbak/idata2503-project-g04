@@ -21,12 +21,24 @@ class MovieDetailScreen extends ConsumerWidget {
   }
 
   /// Adds a movie to the watch list
-  void _addToWatchList(WidgetRef ref) {
+  void _addToWatchList(BuildContext context, WidgetRef ref) {
     ref.read(watchlistProvider.notifier).addToWatchlist(movie);
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Movie added to watchlist')));
+  }
+
+  /// Removes a movie from the watch list
+  void _removeFromWatchList(BuildContext context, WidgetRef ref) {
+    ref.read(watchlistProvider.notifier).removeFromWatchlist(movie);
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Movie removed from watchlist')));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final watchlist = ref.watch(watchlistProvider);
+    final isInWatchLsit = watchlist.contains(movie);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -82,14 +94,20 @@ class MovieDetailScreen extends ConsumerWidget {
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () {
-                      _addToWatchList(ref);
+                      if (isInWatchLsit) {
+                        _removeFromWatchList(context, ref);
+                      } else {
+                        _addToWatchList(context, ref);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor:
                             Theme.of(context).colorScheme.secondaryContainer),
-                    child: const Text(
-                      'Add to Watchlist',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      isInWatchLsit
+                          ? 'Remove from Watchlist'
+                          : 'Add to Watchlist',
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
