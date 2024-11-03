@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:project/models/movie.dart';
+import 'package:project/providers/lists_provider.dart';
 import 'package:project/widgets/starbuilder.dart';
 
 /// A screen representing the movie details screen. This screen shows a movie
 /// with every detail the movie has.
-class MovieDetailScreen extends StatelessWidget {
+class MovieDetailScreen extends ConsumerWidget {
   const MovieDetailScreen({
     super.key,
     required this.movie,
@@ -18,12 +21,12 @@ class MovieDetailScreen extends StatelessWidget {
   }
 
   /// Adds a movie to the watch list
-  void _addToWatchList() {
-    //TODO: Add logic to add a movie to watchlist
+  void _addToWatchList(WidgetRef ref) {
+    ref.read(watchlistProvider.notifier).addToWatchlist(movie);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -79,7 +82,7 @@ class MovieDetailScreen extends StatelessWidget {
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () {
-                      _addToWatchList();
+                      _addToWatchList(ref);
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor:

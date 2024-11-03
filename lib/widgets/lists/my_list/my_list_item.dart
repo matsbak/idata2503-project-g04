@@ -39,8 +39,8 @@ class _MyListItemState extends State<MyListItem> {
         },
         child: Row(
           children: [
-            Image.asset(
-              'assets/images/wall-e.jpg',
+            Image.network(
+              widget.movie.posterUrl,
               width: 80.0,
               height: 80.0,
               fit: BoxFit.cover,
