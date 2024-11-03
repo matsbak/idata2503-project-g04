@@ -44,7 +44,7 @@ class _TabsScreenState extends State<TabsScreen> {
     } else if (_selectedPageIndex == 3) {
       activePage = const ListsScreen();
     } else if (_selectedPageIndex == 4) {
-      activePage = const ProfilePage(); // Profile page when selected
+      activePage = ProfilePage(); // Profile page when selected
     }
 
     return Scaffold(
