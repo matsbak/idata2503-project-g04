@@ -4,12 +4,15 @@ import 'package:project/forms/login_form.dart';
 import 'package:project/providers/authentication_provider.dart';
 import 'package:project/forms/login_form.dart';
 
-class ProfilePage extends ConsumerStatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({
+    super.key,
+  });
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfilePageState extends ConsumerState<ProfilePage> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _showLoginForm = false;
 
   void _toggleLoginForm() {
