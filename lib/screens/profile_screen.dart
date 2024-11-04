@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/forms/login_form.dart';
 import 'package:project/providers/authentication_provider.dart';
-import 'package:project/forms/login_form.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({
