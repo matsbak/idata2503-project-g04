@@ -80,15 +80,27 @@ class MovieDetailScreen extends ConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Rating: ${movie.rating}',
-                        style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
+                      Row(
+                        children: [
+                          Text(
+                            'Rating: ${movie.averageRating}',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '(${movie.ratings.length})',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          )
+                        ],
                       ),
                       const SizedBox(height: 10),
-                      StarBuilder(rating: movie.rating),
+                      StarBuilder(rating: movie.averageRating),
                     ],
                   ),
                   const Spacer(),

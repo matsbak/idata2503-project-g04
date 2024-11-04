@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/models/rating.dart';
 
 enum Genre { action, fantasy, scienceFiction, comedy, horror, drama }
 
@@ -23,14 +24,22 @@ class Movie {
   Movie({
     required this.title,
     required this.description,
-    required this.rating,
+    this.ratings = const [],
     required this.genre,
     required this.posterUrl,
   });
 
   final String title;
   final String description;
-  final double rating;
+  List<Rating> ratings;
   final Genre genre;
   final String posterUrl;
+
+  /// Calculate the average rating
+  double get averageRating {
+    if (ratings.isEmpty) return 0;
+    double avg =
+        ratings.map((r) => r.score).reduce((a, b) => a + b) / ratings.length;
+    return double.parse(avg.toStringAsFixed(2));
+  }
 }

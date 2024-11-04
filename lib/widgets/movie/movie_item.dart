@@ -60,9 +60,9 @@ class MovieItem extends StatelessWidget {
                     const SizedBox(height: 10.0),
                     Row(
                       children: [
-                        StarBuilder(rating: movie.rating),
+                        StarBuilder(rating: movie.averageRating),
                         Text(
-                          movie.rating.toString(),
+                          movie.averageRating.toString(),
                           style: const TextStyle(
                             color: Color.fromARGB(255, 230, 212, 50),
                           ),

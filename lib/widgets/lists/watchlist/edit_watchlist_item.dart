@@ -104,7 +104,7 @@ class _EditWatchlistItemState extends ConsumerState<EditWatchlistItem> {
                     width: 4.0,
                   ),
                   Text(
-                    widget.movie.rating.toString(),
+                    widget.movie.averageRating.toString(),
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           color: Colors.white,
                         ),
