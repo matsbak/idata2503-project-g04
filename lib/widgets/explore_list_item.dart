@@ -41,7 +41,7 @@ class ExploreListItem extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               movie.title,
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14, color: Colors.white),
               overflow: TextOverflow.ellipsis,
             )
           ],

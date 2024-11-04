@@ -3,7 +3,7 @@ import 'package:project/data/dummy_data.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/screens/explore_screen.dart';
 import 'package:project/screens/lists.dart';
-import 'package:project/screens/profilepage.dart';
+import 'package:project/screens/profile_screen.dart';
 import 'package:project/widgets/movie/movie_list.dart';
 import 'package:project/screens/search_screen.dart';
 
@@ -44,7 +44,7 @@ class _TabsScreenState extends State<TabsScreen> {
     } else if (_selectedPageIndex == 3) {
       activePage = const ListsScreen();
     } else if (_selectedPageIndex == 4) {
-      activePage = ProfilePage(); // Profile page when selected
+      activePage = ProfileScreen(); // Profile page when selected
     }
 
     return Scaffold(
