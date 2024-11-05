@@ -45,24 +45,34 @@ class _EditMyListItemState extends State<EditMyListItem> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                style: const TextStyle(color: Colors.white),
-                maxLength: 10,
+              DropdownButtonFormField<double>(
                 decoration: const InputDecoration(
                   label: Text("Rating/Score"),
                 ),
-                keyboardType: TextInputType.number,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+                value: _enteredScore,
+                items: List.generate(
+                  10,
+                  (index) => DropdownMenuItem(
+                    value: (index + 1) * 0.5,
+                    child: Text(((index + 1) * 0.5).toString()),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _enteredScore = value!;
+                  });
+                },
                 validator: (value) {
-                  if (value == null ||
-                      value.isEmpty ||
-                      double.tryParse(value) == null ||
-                      double.tryParse(value)! <= 0) {
+                  if (value == null || value <= 0) {
                     return "Must be a valid positive number between 0.5 - 5";
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  _enteredScore = double.parse(value!);
+                  _enteredScore = value!;
                 },
               ),
               const SizedBox(height: 12),

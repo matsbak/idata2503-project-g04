@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
 
 /// A screen representing the movie details screen. This screen shows a movie
@@ -139,6 +140,8 @@ class MovieDetailScreen extends ConsumerWidget {
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
+              const SizedBox(height: 12),
+              Reviews(ratings: movie.ratings),
             ],
           ),
         ),
