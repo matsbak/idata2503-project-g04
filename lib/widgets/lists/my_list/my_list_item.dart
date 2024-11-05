@@ -63,13 +63,13 @@ class _MyListItemState extends State<MyListItem> {
                       ),
                     ),
                     const Spacer(),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.star_border),
-                        SizedBox(width: 2.0),
+                        const Icon(Icons.star_border),
+                        const SizedBox(width: 2.0),
                         Text(
-                          '4.5',
-                          style: TextStyle(
+                          "${widget.movie.averageRating}",
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

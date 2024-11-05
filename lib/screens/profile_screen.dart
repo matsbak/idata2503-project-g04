@@ -26,7 +26,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
       ),
       body: Center(
         child: isLoggedIn
@@ -54,7 +54,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           onPressed: () {
             ref.read(authProvider.notifier).logout();
           },
-          child: Text('Logout'),
+          child: const Text('Logout'),
         ),
       ],
     );

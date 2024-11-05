@@ -42,4 +42,8 @@ class Movie {
         ratings.map((r) => r.score).reduce((a, b) => a + b) / ratings.length;
     return double.parse(avg.toStringAsFixed(2));
   }
+
+  void addReview(Rating rating) {
+    ratings = [...ratings, rating];
+  }
 }

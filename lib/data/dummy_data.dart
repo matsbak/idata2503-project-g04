@@ -3,22 +3,40 @@ import 'package:project/models/rating.dart';
 
 var dummyMovies = [
   Movie(
+      title: 'Cars',
+      description:
+          'On the way to the biggest race of his life, a hotshot rookie race car gets stranded in a rundown town and learns that winning isnt everything in life.',
+      ratings: [
+        Rating(
+          score: 5.0,
+          comment: "Bil",
+          userId: "Andre",
+          date: DateTime.now().subtract(const Duration(days: 7)),
+        ),
+      ],
+      genre: Genre.action,
+      posterUrl:
+          'https://m.media-amazon.com/images/M/MV5BNDJiMDE1YTMtNjdjYS00M2RlLWJhOWUtYWU5ODQ0OWQwNTQ0XkEyXkFqcGc@._V1_.jpg'),
+  Movie(
     title: 'Cars 2',
     description:
         'On the way to the biggest race of his life, a hotshot rookie race car gets stranded in a rundown town and learns that winning isn\'t everything in life.',
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -34,16 +52,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -59,16 +80,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -84,16 +108,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 1,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 3,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 2.5,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -109,16 +136,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 2.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 3.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 3.5,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -134,16 +164,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 3.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 3.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 2.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -159,21 +192,25 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user4',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -189,16 +226,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 3.5,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -214,16 +254,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 3.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -239,16 +282,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 3.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -264,16 +310,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 3.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -289,16 +338,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -314,16 +366,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 2.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 3.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 3.5,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -339,16 +394,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
@@ -364,16 +422,19 @@ var dummyMovies = [
     ratings: [
       Rating(
         score: 4.5,
+        comment: "Nice movie",
         userId: 'user1',
         date: DateTime.now().subtract(const Duration(days: 5)),
       ),
       Rating(
         score: 4.0,
+        comment: "Nice movie",
         userId: 'user2',
         date: DateTime.now().subtract(const Duration(days: 2)),
       ),
       Rating(
         score: 5.0,
+        comment: "Nice movie",
         userId: 'user3',
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
