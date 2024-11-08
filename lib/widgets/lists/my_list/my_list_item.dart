@@ -68,6 +68,7 @@ class _MyListItemState extends State<MyListItem> {
                         const Icon(Icons.star_border),
                         const SizedBox(width: 2.0),
                         Text(
+                          // TODO Replace with user rating
                           "${widget.movie.averageRating}",
                           style: const TextStyle(
                             fontSize: 16.0,
