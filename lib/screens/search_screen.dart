@@ -67,10 +67,10 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
 
-    final query = _searchController.text;
-    if (query.isNotEmpty && !_recentSearches.contains(query)) {
+    final movieTitle = movie.title;
+    if (!_recentSearches.contains(movieTitle)) {
       setState(() {
-        _recentSearches.insert(0, query);
+        _recentSearches.insert(0, movieTitle);
         if (_recentSearches.length > 5) _recentSearches.removeLast();
       });
     }
