@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/data/dummy_data.dart';
@@ -12,81 +13,195 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   List<Movie> _searchResults = [];
   final List<Movie> _dummyMovies = dummyMovies;
+  List<String> _recentSearches = [];
+  Timer? _debounce;
+  bool _isSearching = false;
 
   @override
   void initState() {
-    _searchResults = _dummyMovies;
     super.initState();
+    _searchResults = _dummyMovies;
+
+    // Add a listener to handle focus changes
+    _focusNode.addListener(() {
+      setState(() {
+        _isSearching = _focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   void _performSearch(String query) {
     setState(() {
-      _searchResults = _dummyMovies
-          .where((movie) =>
-              movie.title.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      if (query.isEmpty) {
+        _searchResults = [];
+      } else {
+        _searchResults = _dummyMovies
+            .where((movie) => movie.title.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      _performSearch(query);
     });
   }
 
   void _selectMovie(Movie movie) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => MovieDetailScreen(movie: movie),
+        builder: (_) => MovieDetailScreen(movie: movie),
       ),
     );
+
+    final query = _searchController.text;
+    if (query.isNotEmpty && !_recentSearches.contains(query)) {
+      setState(() {
+        _recentSearches.insert(0, query);
+        if (_recentSearches.length > 5) _recentSearches.removeLast();
+      });
+    }
+    _focusNode.unfocus(); // Remove focus to show the movie list again
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    _performSearch('');
+    _focusNode.unfocus(); // Remove focus to show the movie list again
+  }
+
+  void _unfocusSearchBar() {
+    setState(() {
+      _isSearching = false;
+    });
+    _focusNode.unfocus();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8, top: 8),
+    return GestureDetector(
+      onTap: _unfocusSearchBar,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-              decoration: const InputDecoration(
+              focusNode: _focusNode,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
                 labelText: 'Search',
-                labelStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                suffixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                labelStyle: const TextStyle(color: Colors.white),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: _clearSearch,
+                )
+                    : const Icon(Icons.search),
+                border: const OutlineInputBorder(),
               ),
-              onChanged: _performSearch,
+              onChanged: _onSearchChanged,
+              onSubmitted: _performSearch, // Handle "Enter" key press
             ),
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: _searchResults.length,
-            itemBuilder: (ctx, index) {
-              final movie = _searchResults[index];
-              return Card(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                child: ListTile(
-                  leading: movie.posterUrl.isNotEmpty
-                      ? Image.network(
-                          movie.posterUrl,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                  title: Text(movie.title),
-                  onTap: () => _selectMovie(movie),
+          if (_isSearching && _searchController.text.isEmpty && _recentSearches.isNotEmpty)
+            Expanded(
+              child: ListView.separated(
+                itemCount: _recentSearches.length,
+                separatorBuilder: (ctx, index) => const Divider(color: Colors.grey),
+                itemBuilder: (ctx, index) {
+                  final search = _recentSearches[index];
+                  return GestureDetector(
+                    onTap: () {
+                      _searchController.text = search;
+                      _performSearch(search);
+                      _focusNode.unfocus(); // Dismiss keyboard after selecting a recent search
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      child: Text(
+                        search,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          else if (!_isSearching && _searchController.text.isEmpty)
+          // Show the full movie list when not interacting with the search bar and no input is given
+            Expanded(
+              child: ListView.builder(
+                itemCount: _dummyMovies.length,
+                itemBuilder: (ctx, index) {
+                  final movie = _dummyMovies[index];
+                  return Card(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    child: ListTile(
+                      leading: movie.posterUrl.isNotEmpty
+                          ? Image.network(
+                        movie.posterUrl,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      )
+                          : null,
+                      title: Text(movie.title, style: const TextStyle(color: Colors.white)),
+                      onTap: () => _selectMovie(movie),
+                    ),
+                  );
+                },
+              ),
+            )
+          else if (_searchResults.isEmpty && _searchController.text.isNotEmpty)
+            // Show an error message when no results are found
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'No results found for "${_searchController.text}".',
+                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                  ),
                 ),
-              );
-            },
-          ),
-        ),
-      ],
+              )
+            else if (_searchResults.isNotEmpty)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _searchResults.length,
+                    itemBuilder: (ctx, index) {
+                      final movie = _searchResults[index];
+                      return Card(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: ListTile(
+                          leading: movie.posterUrl.isNotEmpty
+                              ? Image.network(
+                            movie.posterUrl,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                              : null,
+                          title: Text(movie.title, style: const TextStyle(color: Colors.white)),
+                          onTap: () => _selectMovie(movie),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }
