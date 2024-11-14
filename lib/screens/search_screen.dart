@@ -169,8 +169,8 @@ class _SearchScreenState extends State<SearchScreen> {
               Expanded(
                 child: Center(
                   child: Text(
-                    'No results found for "${_searchController.text}".',
-                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                    '😢 Sorry... we found no results...',
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                 ),
               )
