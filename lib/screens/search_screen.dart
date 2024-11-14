@@ -166,11 +166,11 @@ class _SearchScreenState extends State<SearchScreen> {
             )
           else if (_searchResults.isEmpty && _searchController.text.isNotEmpty)
             // Show an error message when no results are found
-              Expanded(
+              const Expanded(
                 child: Center(
                   child: Text(
                     '😢 Sorry... we found no results...',
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                 ),
               )
