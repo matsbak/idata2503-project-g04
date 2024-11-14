@@ -144,24 +144,22 @@ class _SearchScreenState extends State<SearchScreen> {
           else if (!_isSearching && _searchController.text.isEmpty)
           // Show the full movie list when not interacting with the search bar and no input is given
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
                 itemCount: _dummyMovies.length,
+                separatorBuilder: (ctx, index) => const Divider(color: Colors.grey),
                 itemBuilder: (ctx, index) {
                   final movie = _dummyMovies[index];
-                  return Card(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    child: ListTile(
-                      leading: movie.posterUrl.isNotEmpty
-                          ? Image.network(
-                        movie.posterUrl,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      )
-                          : null,
-                      title: Text(movie.title, style: const TextStyle(color: Colors.white)),
-                      onTap: () => _selectMovie(movie),
-                    ),
+                  return ListTile(
+                    leading: movie.posterUrl.isNotEmpty
+                        ? Image.network(
+                      movie.posterUrl,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                        :null,
+                    title: Text(movie.title, style: const TextStyle(color: Colors.white)),
+                    onTap: () => _selectMovie(movie),
                   );
                 },
               ),
@@ -182,20 +180,17 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemCount: _searchResults.length,
                     itemBuilder: (ctx, index) {
                       final movie = _searchResults[index];
-                      return Card(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        child: ListTile(
-                          leading: movie.posterUrl.isNotEmpty
-                              ? Image.network(
-                            movie.posterUrl,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                              : null,
-                          title: Text(movie.title, style: const TextStyle(color: Colors.white)),
-                          onTap: () => _selectMovie(movie),
-                        ),
+                      return ListTile(
+                        leading: movie.posterUrl.isNotEmpty
+                            ? Image.network(
+                          movie.posterUrl,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                            : null,
+                        title: Text(movie.title, style: const TextStyle(color: Colors.white)),
+                        onTap: () => _selectMovie(movie),
                       );
                     },
                   ),
