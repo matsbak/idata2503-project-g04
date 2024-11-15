@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/forms/login_form.dart';
+import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -13,10 +14,19 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _showLoginForm = false;
+  bool _showSignupForm = false;
 
   void _toggleLoginForm() {
     setState(() {
       _showLoginForm = !_showLoginForm;
+      _showSignupForm = false; // Hide signup form when showing login form
+    });
+  }
+
+  void _toggleSignupForm() {
+    setState(() {
+      _showSignupForm = !_showSignupForm;
+      _showLoginForm = false; // Hide login form when showing signup form
     });
   }
 
@@ -32,11 +42,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: isLoggedIn
             ? _buildLoggedInContent(context, ref)
             : _showLoginForm
-                ? LoginForm(onLoginSuccess: () {
-                    ref.read(authProvider.notifier).logout();
-                    _toggleLoginForm();
-                  })
-                : _buildLoggedOutContent(context, ref),
+                ? LoginForm(
+                    onLoginSuccess: () {
+                      ref.read(authProvider.notifier).logout();
+                      _toggleLoginForm();
+                    },
+                    onSwitchToSignup: _toggleSignupForm, // Switch to signup
+                  )
+                : _showSignupForm
+                    ? SignupForm(
+                        onSignupSuccess: () {
+                          _toggleSignupForm();
+                        },
+                        onSwitchToLogin: _toggleLoginForm, // Switch to login
+                      )
+                    : _buildLoggedOutContent(context, ref),
       ),
     );
   }

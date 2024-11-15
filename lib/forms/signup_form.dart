@@ -1,30 +1,28 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:project/forms/signup_form.dart';
 
-class LoginForm extends StatefulWidget {
-  final VoidCallback onLoginSuccess;
-  final VoidCallback onSwitchToSignup; // Callback to switch to signup form
+class SignupForm extends StatefulWidget {
+  final VoidCallback onSignupSuccess;
+  final VoidCallback onSwitchToLogin; // Callback to switch to login form
 
-  const LoginForm({
+  const SignupForm({
     super.key,
-    required this.onLoginSuccess,
-    required this.onSwitchToSignup,
+    required this.onSignupSuccess,
+    required this.onSwitchToLogin,
   });
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _SignupFormState createState() => _SignupFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _SignupFormState extends State<SignupForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _login() {
+  void _signup() {
     if (_formKey.currentState!.validate()) {
-      // Perform login action
-      widget.onLoginSuccess();
+      // Perform signup action
+      widget.onSignupSuccess();
     }
   }
 
@@ -34,6 +32,13 @@ class _LoginFormState extends State<LoginForm> {
       key: _formKey,
       child: Column(
         children: [
+          TextFormField(
+            decoration: const InputDecoration(labelText: 'Name'),
+            keyboardType: TextInputType.name,
+            validator: (value) => value == null || value.isEmpty
+                ? 'Please enter your name'
+                : null,
+          ),
           TextFormField(
             controller: _emailController,
             decoration: const InputDecoration(labelText: 'Email'),
@@ -52,14 +57,14 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: _login,
-            child: const Text('Login'),
+            onPressed: _signup,
+            child: const Text('Sign Up'),
           ),
           const SizedBox(height: 20),
           GestureDetector(
-            onTap: widget.onSwitchToSignup,
+            onTap: widget.onSwitchToLogin,
             child: const Text(
-              'Not a user yet? Sign up',
+              'Already a user? Log in',
               style: TextStyle(color: Colors.white),
             ),
           ),
