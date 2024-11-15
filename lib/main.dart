@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +14,8 @@ final theme = ThemeData(
   textTheme: GoogleFonts.ptSansCaptionTextTheme(),
 );
 
-void main() {
+Future main() async {
+  await dotenv.load();
   runApp(const ProviderScope(
     child: App(),
   ));
