@@ -8,6 +8,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({
     super.key,
   });
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -44,15 +45,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             : _showLoginForm
                 ? LoginForm(
                     onLoginSuccess: () {
-                      ref.read(authProvider.notifier).logout();
-                      _toggleLoginForm();
+                      ref.read(authProvider.notifier).login();
                     },
                     onSwitchToSignup: _toggleSignupForm, // Switch to signup
                   )
                 : _showSignupForm
                     ? SignupForm(
                         onSignupSuccess: () {
-                          _toggleSignupForm();
+                          setState(() {
+                            _showSignupForm =
+                                false; // Hide the signup form after success
+                          });
                         },
                         onSwitchToLogin: _toggleLoginForm, // Switch to login
                       )
