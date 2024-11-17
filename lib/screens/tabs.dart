@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:project/data/dummy_data.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/screens/explore_screen.dart';
 import 'package:project/screens/lists.dart';
 import 'package:project/screens/profile_screen.dart';
-import 'package:project/widgets/movie/movie_list.dart';
 import 'package:project/screens/search_screen.dart';
+import 'package:project/widgets/movie/movie_list.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -49,27 +50,28 @@ class _TabsScreenState extends State<TabsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            const Spacer(),
-            Text(
-              'Movie Rater'.toUpperCase(),
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+        title: Text(
+          'Movie Rater'.toUpperCase(),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+        ),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 5.0,
             ),
-            const Spacer(),
-            IconButton(
+            child: IconButton(
               icon: const Icon(Icons.account_circle),
               style: IconButton.styleFrom(
                 foregroundColor: Colors.white,
               ),
               onPressed: _navigateToProfile, // Navigate to profile page
             ),
-          ],
-        ),
-        centerTitle: true,
+          ),
+        ],
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       backgroundColor: const Color.fromARGB(255, 35, 30, 30),
