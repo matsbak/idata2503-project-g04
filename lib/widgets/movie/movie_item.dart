@@ -13,7 +13,7 @@ class MovieItem extends StatelessWidget {
   final Movie movie;
 
   //Duplicated code the same as in explore_list_item.dart
-  void _onSelectedMovie(BuildContext context, Movie movie) {
+  void _onSelectedMovie(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (ctx) => MovieDetailScreen(movie: movie)),
@@ -23,7 +23,7 @@ class MovieItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _onSelectedMovie(context, movie),
+      onTap: () => _onSelectedMovie(context),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0), // Card corner radius
@@ -36,7 +36,7 @@ class MovieItem extends StatelessWidget {
             Expanded(
               flex: 3, // Set flex for the image, adjust as needed
               child: Image.network(
-                movie.posterUrl, //ToDO add a better image
+                'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.posterUrl}',
                 fit: BoxFit.cover, // Fills the container with the image
                 height: 100, // Adjust height of the image
               ),

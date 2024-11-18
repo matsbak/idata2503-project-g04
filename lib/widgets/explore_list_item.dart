@@ -32,7 +32,7 @@ class ExploreListItem extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                movie.posterUrl,
+                'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.posterUrl}',
                 fit: BoxFit.cover,
                 height: 160,
                 width: 120,

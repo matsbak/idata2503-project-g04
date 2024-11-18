@@ -19,20 +19,22 @@ class MovieList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Trending / featured',
+            'Popular',
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 2.0),
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: movies.length,
               itemBuilder: (ctx, index) => Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.only(
+                  top: 4.0,
+                ),
                 child: MovieItem(
                   movie: movies[index],
                 ),

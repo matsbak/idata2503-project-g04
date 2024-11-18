@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-import 'package:project/data/dummy_data.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:project/models/movie.dart';
 import 'package:project/screens/explore_screen.dart';
 import 'package:project/screens/lists.dart';
@@ -18,8 +22,62 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  final List<Movie> _registeredMovies = dummyMovies;
+  List<Movie> _registeredMovies = [];
   int _selectedPageIndex = 0;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMovies();
+  }
+
+  void _loadMovies() async {
+    final url = Uri.parse(
+      'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+    );
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
+          'accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = 'Failed to fetch data';
+        });
+      }
+
+      if (_error == null) {
+        final Map<String, dynamic> movieData = json.decode(response.body);
+        final List<Movie> loadedMovies = [];
+
+        for (final movie in movieData['results']) {
+          loadedMovies.add(
+            Movie(
+              id: movie['id'],
+              title: movie['title'],
+              description: movie['overview'],
+              posterUrl: movie['poster_path'],
+            ),
+          );
+        }
+
+        setState(() {
+          _registeredMovies = loadedMovies;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Something went wrong';
+      });
+    }
+  }
 
   void _selectPage(int index) {
     setState(() {
@@ -35,8 +93,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage =
-        MovieList(movies: _registeredMovies); // Default assignment
+    Widget activePage = MovieList(movies: _registeredMovies);
 
     if (_selectedPageIndex == 1) {
       activePage = ExploreScreen(movies: _registeredMovies);
@@ -45,7 +102,26 @@ class _TabsScreenState extends State<TabsScreen> {
     } else if (_selectedPageIndex == 3) {
       activePage = const ListsScreen();
     } else if (_selectedPageIndex == 4) {
-      activePage = ProfileScreen(); // Profile page when selected
+      activePage = const ProfileScreen();
+    }
+
+    Widget content = activePage;
+
+    if (_isLoading) {
+      content = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_error != null) {
+      content = Center(
+        child: Text(
+          _error!,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: Colors.white,
+              ),
+        ),
+      );
     }
 
     return Scaffold(
@@ -75,7 +151,7 @@ class _TabsScreenState extends State<TabsScreen> {
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       backgroundColor: const Color.fromARGB(255, 35, 30, 30),
-      body: activePage,
+      body: content,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         currentIndex: _selectedPageIndex < 4 ? _selectedPageIndex : 0,
