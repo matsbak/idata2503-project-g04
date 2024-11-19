@@ -1,21 +1,28 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import 'package:project/models/movie.dart';
-import 'package:project/data/dummy_data.dart';
 import 'package:project/screens/movie_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({
+    super.key,
+    required this.movies,
+  });
+
+  final List<Movie> movies;
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() {
+    return _SearchScreenState();
+  }
 }
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   List<Movie> _searchResults = [];
-  final List<Movie> _dummyMovies = dummyMovies;
   List<String> _recentSearches = [];
   Timer? _debounce;
   bool _isSearching = false;
@@ -23,7 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _searchResults = _dummyMovies;
+    _searchResults = widget.movies;
 
     // Add a listener to handle focus changes
     _focusNode.addListener(() {
@@ -46,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
       if (query.isEmpty) {
         _searchResults = [];
       } else {
-        _searchResults = _dummyMovies
+        _searchResults = widget.movies
             .where((movie) =>
                 movie.title.toLowerCase().contains(query.toLowerCase()))
             .toList();
@@ -151,11 +158,11 @@ class _SearchScreenState extends State<SearchScreen> {
             // Show the full movie list when not interacting with the search bar and no input is given
             Expanded(
               child: ListView.separated(
-                itemCount: _dummyMovies.length,
+                itemCount: widget.movies.length,
                 separatorBuilder: (ctx, index) =>
                     const Divider(color: Colors.grey),
                 itemBuilder: (ctx, index) {
-                  final movie = _dummyMovies[index];
+                  final movie = widget.movies[index];
                   return ListTile(
                     leading: SizedBox(
                       width: 50,

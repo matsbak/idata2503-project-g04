@@ -145,7 +145,7 @@ class _TabsScreenState extends State<TabsScreen> {
     if (_selectedPageIndex == 1) {
       activePage = ExploreScreen(movies: _registeredMovies);
     } else if (_selectedPageIndex == 2) {
-      activePage = const SearchScreen();
+      activePage = SearchScreen(movies: _registeredMovies);
     } else if (_selectedPageIndex == 3) {
       activePage = const ListsScreen();
     } else if (_selectedPageIndex == 4) {
