@@ -34,17 +34,13 @@ class MovieItem extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 3, // Set flex for the image, adjust as needed
               child: FittedBox(
                 fit: BoxFit.cover,
-                child: SizedBox(
-                  height: 100,
-                  child: movie.poster,
-                ),
+                child: movie.poster,
               ),
             ),
             Expanded(
-              flex: 5, // Adjust flex for content
+              flex: 3, // Adjust flex for content
               child: Padding(
                 padding: const EdgeInsets.all(
                     16.0), // Padding around the text content
