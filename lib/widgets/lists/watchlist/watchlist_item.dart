@@ -41,11 +41,11 @@ class _WatchlistItemState extends State<WatchlistItem> {
         },
         child: Row(
           children: [
-            FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: 80.0,
-                height: 80.0,
+            SizedBox(
+              width: 80.0,
+              height: 80.0,
+              child: FittedBox(
+                fit: BoxFit.cover,
                 child: widget.movie.poster,
               ),
             ),

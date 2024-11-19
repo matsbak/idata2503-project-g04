@@ -157,11 +157,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (ctx, index) {
                   final movie = _dummyMovies[index];
                   return ListTile(
-                    leading: FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
+                    leading: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
                         child: movie.poster,
                       ),
                     ),
@@ -189,11 +189,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (ctx, index) {
                   final movie = _searchResults[index];
                   return ListTile(
-                    leading: FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
+                    leading: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
                         child: movie.poster,
                       ),
                     ),

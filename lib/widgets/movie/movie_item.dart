@@ -34,9 +34,13 @@ class MovieItem extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: movie.poster,
+              child: SizedBox(
+                width: 100,
+                height: 120,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: movie.poster,
+                ),
               ),
             ),
             Expanded(

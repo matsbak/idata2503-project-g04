@@ -31,11 +31,11 @@ class ExploreListItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: 120,
-                  height: 160,
+              child: SizedBox(
+                width: 120,
+                height: 160,
+                child: FittedBox(
+                  fit: BoxFit.cover,
                   child: movie.poster,
                 ),
               ),
