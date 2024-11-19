@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/service/FirebaseService.dart';
 import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
 
@@ -25,17 +26,36 @@ class MovieDetailScreen extends ConsumerStatefulWidget {
 
 class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Adds a movie to the watch list
-  void _addToWatchList(BuildContext context, WidgetRef ref) {
-    ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Movie added to watchlist')));
+  void _addToWatchList(BuildContext context, WidgetRef ref) async {
+    try {
+      final firebaseKey =
+          await FirebaseService.addMovieToFirebase(widget.movie);
+      if (firebaseKey != null) {
+        ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Movie added to watchlist')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to add movie to watchlist: $error")),
+      );
+    }
   }
 
   /// Removes a movie from the watch list
-  void _removeFromWatchList(BuildContext context, WidgetRef ref) {
-    ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Movie removed from watchlist')));
+  void _removeFromWatchList(BuildContext context, WidgetRef ref) async {
+    try {
+      await FirebaseService.removeMovieById(widget.movie.id);
+
+      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Movie removed from watchlist')));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Failed to remove moive to watchlist: $error"),
+      ));
+    }
   }
 
   @override
