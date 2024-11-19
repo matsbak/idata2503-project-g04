@@ -61,10 +61,12 @@ class _TabsScreenState extends State<TabsScreen> {
             id: movie['id'],
             title: movie['title'],
             description: movie['overview'],
-            poster: Image.network(
-              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie['poster_path']}',
-            ),
+            posterPath: movie['poster_path'],
           );
+
+          // Get posters for each movie
+          loadedMovie.poster = Image.network(
+              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${loadedMovie.posterPath}');
 
           // Load genres for each movie
           _loadMovieGenres(loadedMovie);

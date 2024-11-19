@@ -9,7 +9,7 @@ class Movie {
     required this.description,
     this.ratings = const [],
     this.genres = const [],
-    required this.poster,
+    required this.posterPath,
   });
 
   final int id;
@@ -17,7 +17,8 @@ class Movie {
   final String description;
   List<Rating> ratings;
   List<String> genres;
-  final Image poster;
+  final String posterPath;
+  Image? poster;
 
   /// Calculate the average rating
   double get averageRating {

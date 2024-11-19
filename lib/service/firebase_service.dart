@@ -60,7 +60,7 @@ class FirebaseService {
           'id': movie.id,
           'title': movie.title,
           'description': movie.description,
-          'posterUrl': movie.posterUrl,
+          'posterPath': movie.posterPath,
         }),
       );
 

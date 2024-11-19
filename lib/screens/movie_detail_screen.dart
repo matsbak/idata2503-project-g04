@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
-import 'package:project/service/firebaseService.dart';
+import 'package:project/service/firebase_service.dart';
 import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
 
@@ -18,6 +18,7 @@ class MovieDetailScreen extends ConsumerWidget {
 
   final Movie movie;
 
+  // TODO Fix context usage with async
   /// Adds a movie to the watch list
   void _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
