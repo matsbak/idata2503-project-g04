@@ -57,20 +57,65 @@ class _TabsScreenState extends State<TabsScreen> {
         final List<Movie> loadedMovies = [];
 
         for (final movie in movieData['results']) {
-          loadedMovies.add(
-            Movie(
-              id: movie['id'],
-              title: movie['title'],
-              description: movie['overview'],
-              posterUrl: movie['poster_path'],
+          final loadedMovie = Movie(
+            id: movie['id'],
+            title: movie['title'],
+            description: movie['overview'],
+            poster: Image.network(
+              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie['poster_path']}',
             ),
           );
+
+          // Load genres for each movie
+          _loadMovieGenres(loadedMovie);
+
+          loadedMovies.add(loadedMovie);
         }
 
+        // Check for error once more after loading genres
+        if (_error == null) {
+          setState(() {
+            _registeredMovies = loadedMovies;
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Something went wrong';
+      });
+    }
+  }
+
+  void _loadMovieGenres(Movie movie) async {
+    final url = Uri.parse(
+      'https://api.themoviedb.org/3/movie/${movie.id}?language=en-US',
+    );
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
+          'accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode >= 400) {
         setState(() {
-          _registeredMovies = loadedMovies;
-          _isLoading = false;
+          _error = 'Failed to fetch data';
         });
+      }
+
+      if (_error == null) {
+        final Map<String, dynamic> movieDetailsData =
+            json.decode(response.body);
+        final List<String> loadedGenres = [];
+
+        for (final genre in movieDetailsData['genres']) {
+          loadedGenres.add(genre['name']);
+        }
+
+        movie.genres = loadedGenres;
       }
     } catch (e) {
       setState(() {

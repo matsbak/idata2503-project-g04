@@ -35,10 +35,12 @@ class MovieItem extends StatelessWidget {
           children: [
             Expanded(
               flex: 3, // Set flex for the image, adjust as needed
-              child: Image.network(
-                'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.posterUrl}',
-                fit: BoxFit.cover, // Fills the container with the image
-                height: 100, // Adjust height of the image
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  height: 100,
+                  child: movie.poster,
+                ),
               ),
             ),
             Expanded(

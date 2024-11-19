@@ -1,22 +1,24 @@
+import 'package:flutter/material.dart';
+
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 
 var dummyMovies = [
   Movie(
-      id: 1,
-      title: 'Cars',
-      description:
-          'On the way to the biggest race of his life, a hotshot rookie race car gets stranded in a rundown town and learns that winning isnt everything in life.',
-      ratings: [
-        Rating(
-          score: 5.0,
-          comment: "Bil",
-          userId: "Andre",
-          date: DateTime.now().subtract(const Duration(days: 7)),
-        ),
-      ],
-      posterUrl:
-          'https://m.media-amazon.com/images/M/MV5BNDJiMDE1YTMtNjdjYS00M2RlLWJhOWUtYWU5ODQ0OWQwNTQ0XkEyXkFqcGc@._V1_.jpg'),
+    id: 1,
+    title: 'Cars',
+    description:
+        'On the way to the biggest race of his life, a hotshot rookie race car gets stranded in a rundown town and learns that winning isnt everything in life.',
+    ratings: [
+      Rating(
+        score: 5.0,
+        comment: "Bil",
+        userId: "Andre",
+        date: DateTime.now().subtract(const Duration(days: 7)),
+      ),
+    ],
+    poster: Image.asset('wall-e.jpg'),
+  ),
   Movie(
     id: 2,
     title: 'Cars 2',
@@ -42,8 +44,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BMTUzNTc3MTU3M15BMl5BanBnXkFtZTcwMzIxNTc3NA@@._V1_FMjpg_UX1000_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 3,
@@ -70,8 +71,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BMjExMTg5OTU0NF5BMl5BanBnXkFtZTcwMjMxMzMzMw@@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 4,
@@ -98,8 +98,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BNzIxMDQ2YTctNDY4MC00ZTRhLTk4ODQtMTVlOWY4NTdiYmMwXkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 5,
@@ -126,8 +125,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BZTQ4YTM0MTAtZGNlMy00YmI5LThkOTktYjRjODI0M2EzMGU2XkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 6,
@@ -154,8 +152,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BZjI5MzdmODctYjA4NS00ZmMxLWJlOWUtOGVhMjA0OGMxMWYzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 7,
@@ -182,8 +179,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BODI4NDY2NDM5M15BMl5BanBnXkFtZTgwNzEwOTMxMDE@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 8,
@@ -216,8 +212,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BOGUwMDk0Y2MtNjBlNi00NmRiLTk2MWYtMGMyMDlhYmI4ZDBjXkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 9,
@@ -244,8 +239,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BNWIyNmU5MGYtZDZmNi00ZjAwLWJlYjgtZTc0ZGIxMDE4ZGYwXkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 10,
@@ -272,8 +266,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BNDhlMzEyNzItMTA5Mi00YWRhLThlNTktYTQyMTA0MDIyNDEyXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 11,
@@ -300,8 +293,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BNTU1MzgyMDMtMzBlZS00YzczLThmYWEtMjU3YmFlOWEyMjE1XkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 12,
@@ -328,8 +320,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BZGZmOTZjNzUtOTE4OS00OGM3LWJiNGEtZjk4Yzg2M2Q1YzYxXkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 13,
@@ -356,8 +347,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BMGNlYmM1NmQtYWExMS00NmRjLTg5ZmEtMmYyYzJkMzljYWMxXkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 14,
@@ -384,8 +374,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BZGRmMGRhOWMtOTk3Ni00OTRjLTkyYTAtYzA1M2IzMGE3NGRkXkEyXkFqcGc@._V1_.jpg',
+   poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 15,
@@ -412,8 +401,7 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
   Movie(
     id: 16,
@@ -440,7 +428,6 @@ var dummyMovies = [
         date: DateTime.now().subtract(const Duration(days: 1)),
       ),
     ],
-    posterUrl:
-        'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_.jpg',
+    poster: Image.asset('wall-e.jpg'),
   ),
 ];

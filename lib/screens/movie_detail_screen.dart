@@ -152,9 +152,9 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    'https://image.tmdb.org/t/p/w600_and_h900_bestv2${widget.movie.posterUrl}',
-                    height: 300,
+                  child: SizedBox(
+                    height: 200,
+                    child: widget.movie.poster,
                   ),
                 ),
               ),

@@ -47,7 +47,8 @@ class _SearchScreenState extends State<SearchScreen> {
         _searchResults = [];
       } else {
         _searchResults = _dummyMovies
-            .where((movie) => movie.title.toLowerCase().contains(query.toLowerCase()))
+            .where((movie) =>
+                movie.title.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     });
@@ -107,9 +108,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 labelStyle: const TextStyle(color: Colors.white),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: _clearSearch,
-                )
+                        icon: const Icon(Icons.clear),
+                        onPressed: _clearSearch,
+                      )
                     : const Icon(Icons.search),
                 border: const OutlineInputBorder(),
               ),
@@ -117,21 +118,26 @@ class _SearchScreenState extends State<SearchScreen> {
               onSubmitted: _performSearch, // Handle "Enter" key press
             ),
           ),
-          if (_isSearching && _searchController.text.isEmpty && _recentSearches.isNotEmpty)
+          if (_isSearching &&
+              _searchController.text.isEmpty &&
+              _recentSearches.isNotEmpty)
             Expanded(
               child: ListView.separated(
                 itemCount: _recentSearches.length,
-                separatorBuilder: (ctx, index) => const Divider(color: Colors.grey),
+                separatorBuilder: (ctx, index) =>
+                    const Divider(color: Colors.grey),
                 itemBuilder: (ctx, index) {
                   final search = _recentSearches[index];
                   return GestureDetector(
                     onTap: () {
                       _searchController.text = search;
                       _performSearch(search);
-                      _focusNode.unfocus(); // Dismiss keyboard after selecting a recent search
+                      _focusNode
+                          .unfocus(); // Dismiss keyboard after selecting a recent search
                     },
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
                       child: Text(
                         search,
                         style: const TextStyle(color: Colors.grey),
@@ -142,23 +148,25 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             )
           else if (!_isSearching && _searchController.text.isEmpty)
-          // Show the full movie list when not interacting with the search bar and no input is given
+            // Show the full movie list when not interacting with the search bar and no input is given
             Expanded(
               child: ListView.separated(
                 itemCount: _dummyMovies.length,
-                separatorBuilder: (ctx, index) => const Divider(color: Colors.grey),
+                separatorBuilder: (ctx, index) =>
+                    const Divider(color: Colors.grey),
                 itemBuilder: (ctx, index) {
                   final movie = _dummyMovies[index];
                   return ListTile(
-                    leading: movie.posterUrl.isNotEmpty
-                        ? Image.network(
-                      movie.posterUrl,
-                      width: 50,
-                      height: 50,
+                    leading: FittedBox(
                       fit: BoxFit.cover,
-                    )
-                        :null,
-                    title: Text(movie.title, style: const TextStyle(color: Colors.white)),
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: movie.poster,
+                      ),
+                    ),
+                    title: Text(movie.title,
+                        style: const TextStyle(color: Colors.white)),
                     onTap: () => _selectMovie(movie),
                   );
                 },
@@ -166,35 +174,36 @@ class _SearchScreenState extends State<SearchScreen> {
             )
           else if (_searchResults.isEmpty && _searchController.text.isNotEmpty)
             // Show an error message when no results are found
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    '😢 Sorry... we found no results...',
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
+            const Expanded(
+              child: Center(
+                child: Text(
+                  '😢 Sorry... we found no results...',
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
-              )
-            else if (_searchResults.isNotEmpty)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _searchResults.length,
-                    itemBuilder: (ctx, index) {
-                      final movie = _searchResults[index];
-                      return ListTile(
-                        leading: movie.posterUrl.isNotEmpty
-                            ? Image.network(
-                          movie.posterUrl,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        )
-                            : null,
-                        title: Text(movie.title, style: const TextStyle(color: Colors.white)),
-                        onTap: () => _selectMovie(movie),
-                      );
-                    },
-                  ),
-                ),
+              ),
+            )
+          else if (_searchResults.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: _searchResults.length,
+                itemBuilder: (ctx, index) {
+                  final movie = _searchResults[index];
+                  return ListTile(
+                    leading: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: movie.poster,
+                      ),
+                    ),
+                    title: Text(movie.title,
+                        style: const TextStyle(color: Colors.white)),
+                    onTap: () => _selectMovie(movie),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );

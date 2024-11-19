@@ -78,9 +78,9 @@ class _EditWatchlistItemState extends ConsumerState<EditWatchlistItem> {
                 borderRadius: BorderRadius.circular(12.0),
               ),
               clipBehavior: Clip.hardEdge,
-              child: Image.network(
-                widget.movie.posterUrl,
+              child: SizedBox(
                 width: 250.0,
+                child: widget.movie.poster,
               ),
             ),
           ),

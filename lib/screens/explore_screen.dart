@@ -25,59 +25,6 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  List<String> _genres = [];
-  bool _isLoading = true;
-  String? _error;
-
-  void _loadGenres(int id) async {
-    final url = Uri.parse(
-      'https://api.themoviedb.org/3/movie/$id?language=en-US',
-    );
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
-          'accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode >= 400) {
-        setState(() {
-          _error = 'Failed to fetch data';
-        });
-      }
-
-      if (_error == null) {
-        final Map<String, dynamic> movieDetailsData = json.decode(response.body);
-        final List<String> loadedGenres = [];
-
-        for (final genre in movieDetailsData['genres']) {
-          if (!_genres.contains(genre['name'])) {
-            loadedGenres.add(genre['name']);
-          }
-        }
-
-        setState(() {
-          _genres = [..._genres, ...loadedGenres];
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Something went wrong';
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    for (final movie in widget.movies) {
-      _loadGenres(movie.id);
-    }
-  }
-  
   @override
   Widget build(BuildContext context) {
     // final actionMovies =
@@ -98,8 +45,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       padding: const EdgeInsets.all(8.0),
       child: ListView(
         children: [
-          for (final genre in _genres)
-            _buildGenreSection(genre),
+          // _buildGenreSection(genre),
         ],
       ),
     );

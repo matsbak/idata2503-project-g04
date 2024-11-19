@@ -41,11 +41,13 @@ class _MyListItemState extends State<MyListItem> {
         },
         child: Row(
           children: [
-            Image.network(
-              widget.movie.posterUrl,
-              width: 80.0,
-              height: 80.0,
+            FittedBox(
               fit: BoxFit.cover,
+              child: SizedBox(
+                width: 80.0,
+                height: 80.0,
+                child: widget.movie.poster,
+              ),
             ),
             Expanded(
               child: Padding(

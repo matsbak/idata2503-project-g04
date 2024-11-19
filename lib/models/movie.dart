@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:project/models/rating.dart';
 
 class Movie {
@@ -7,7 +9,7 @@ class Movie {
     required this.description,
     this.ratings = const [],
     this.genres = const [],
-    required this.posterUrl,
+    required this.poster,
   });
 
   final int id;
@@ -15,7 +17,7 @@ class Movie {
   final String description;
   List<Rating> ratings;
   List<String> genres;
-  final String posterUrl;
+  final Image poster;
 
   /// Calculate the average rating
   double get averageRating {
