@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
-import 'package:project/service/FirebaseService.dart';
+import 'package:project/service/firebaseService.dart';
 import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
 
@@ -25,6 +29,55 @@ class MovieDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
+  bool _isLoading = true;
+  String? _error;
+
+  void _loadGenres() async {
+    final url = Uri.parse(
+      'https://api.themoviedb.org/3/movie/${widget.movie.id}?language=en-US',
+    );
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
+          'accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = 'Failed to fetch data';
+        });
+      }
+
+      if (_error == null) {
+        final Map<String, dynamic> movieDetailsData =
+            json.decode(response.body);
+        final List<String> loadedGenres = [];
+
+        for (final genre in movieDetailsData['genres']) {
+          loadedGenres.add(genre['name']);
+        }
+
+        setState(() {
+          widget.movie.genres = loadedGenres;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Something went wrong';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGenres();
+  }
+
   /// Adds a movie to the watch list
   void _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
@@ -65,6 +118,39 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
     final isInLists =
         watchlist.contains(widget.movie) || myList.contains(widget.movie);
 
+    List<Widget> genresContent = [const CircularProgressIndicator()];
+
+    if (!_isLoading) {
+      genresContent = [];
+      for (final genre in widget.movie.genres) {
+        genresContent = [
+          ...genresContent,
+          Text(
+            genre,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ];
+      }
+    }
+
+    if (_error != null) {
+      genresContent = [
+        Text(
+          _error!,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            fontStyle: FontStyle.italic,
+            color: Colors.white,
+          ),
+        ),
+      ];
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -86,10 +172,6 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: SizedBox(
-                    height: 200,
-                    child: widget.movie.poster,
-                  ),
                 ),
               ),
               const SizedBox(height: 20),
