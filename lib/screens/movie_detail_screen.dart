@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
@@ -14,77 +10,21 @@ import 'package:project/widgets/starbuilder.dart';
 
 /// A screen representing the movie details screen. This screen shows a movie
 /// with every detail the movie has.
-class MovieDetailScreen extends ConsumerStatefulWidget {
+class MovieDetailScreen extends ConsumerWidget {
   const MovieDetailScreen({
     super.key,
     required this.movie,
   });
 
-  @override
-  ConsumerState<MovieDetailScreen> createState() {
-    return _MovieDetailScreenState();
-  }
-
   final Movie movie;
-}
-
-class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
-  bool _isLoading = true;
-  String? _error;
-
-  void _loadGenres() async {
-    final url = Uri.parse(
-      'https://api.themoviedb.org/3/movie/${widget.movie.id}?language=en-US',
-    );
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
-          'accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode >= 400) {
-        setState(() {
-          _error = 'Failed to fetch data';
-        });
-      }
-
-      if (_error == null) {
-        final Map<String, dynamic> movieDetailsData =
-            json.decode(response.body);
-        final List<String> loadedGenres = [];
-
-        for (final genre in movieDetailsData['genres']) {
-          loadedGenres.add(genre['name']);
-        }
-
-        setState(() {
-          widget.movie.genres = loadedGenres;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Something went wrong';
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadGenres();
-  }
 
   /// Adds a movie to the watch list
   void _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
       final firebaseKey =
-          await FirebaseService.addMovieToFirebase(widget.movie);
+          await FirebaseService.addMovieToFirebase(movie);
       if (firebaseKey != null) {
-        ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+        ref.read(watchlistProvider.notifier).addToWatchlist(movie);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Movie added to watchlist')),
         );
@@ -99,9 +39,9 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Removes a movie from the watch list
   void _removeFromWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      await FirebaseService.removeMovieById(widget.movie.id);
+      await FirebaseService.removeMovieById(movie.id);
 
-      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+      ref.read(watchlistProvider.notifier).removeFromWatchlist(movie);
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Movie removed from watchlist')));
     } catch (error) {
@@ -112,49 +52,16 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final watchlist = ref.watch(watchlistProvider);
     final myList = ref.watch(myListProvider);
     final isInLists =
-        watchlist.contains(widget.movie) || myList.contains(widget.movie);
-
-    List<Widget> genresContent = [const CircularProgressIndicator()];
-
-    if (!_isLoading) {
-      genresContent = [];
-      for (final genre in widget.movie.genres) {
-        genresContent = [
-          ...genresContent,
-          Text(
-            genre,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
-        ];
-      }
-    }
-
-    if (_error != null) {
-      genresContent = [
-        Text(
-          _error!,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            fontStyle: FontStyle.italic,
-            color: Colors.white,
-          ),
-        ),
-      ];
-    }
+        watchlist.contains(movie) || myList.contains(movie);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.movie.title,
+          movie.title,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -172,11 +79,15 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
               Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
+                  child: SizedBox(
+                    height: 320,
+                    child: movie.poster,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
               Text(
-                widget.movie.title,
+                movie.title,
                 style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -191,7 +102,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                       Row(
                         children: [
                           Text(
-                            'Rating: ${widget.movie.averageRating}',
+                            'Rating: ${movie.averageRating}',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
@@ -199,7 +110,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '(${widget.movie.ratings.length})',
+                            '(${movie.ratings.length})',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -208,7 +119,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      StarBuilder(rating: widget.movie.averageRating),
+                      StarBuilder(rating: movie.averageRating),
                     ],
                   ),
                   const Spacer(),
@@ -240,7 +151,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                 ),
               ),
               const SizedBox(height: 5),
-              for (final genre in widget.movie.genres)
+              for (final genre in movie.genres)
                 Text(
                   genre,
                   style: const TextStyle(
@@ -251,13 +162,13 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                 ),
               const SizedBox(height: 20),
               Text(
-                widget.movie.description,
+                movie.description,
                 style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
               const SizedBox(height: 12),
-              Reviews(ratings: widget.movie.ratings),
+              Reviews(ratings: movie.ratings),
             ],
           ),
         ),
