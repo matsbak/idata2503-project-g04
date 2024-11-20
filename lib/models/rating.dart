@@ -2,13 +2,13 @@
 class Rating {
   Rating({
     required this.score,
-    required this.comment,
+    required this.review,
     required this.userId,
     required this.date,
   });
 
-  double score;
-  String comment;
+  final double score;
+  final String review;
   final String userId;
   final DateTime date;
 }

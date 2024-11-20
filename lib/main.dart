@@ -13,6 +13,7 @@ final theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     seedColor: const Color.fromARGB(255, 88, 42, 114),
     brightness: Brightness.dark,
+    errorContainer: const Color.fromARGB(255, 135, 55, 50),
   ),
   textTheme: GoogleFonts.ptSansCaptionTextTheme(),
 );

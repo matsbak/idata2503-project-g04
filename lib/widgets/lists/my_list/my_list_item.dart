@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:project/models/movie.dart';
-import 'package:project/widgets/lists/my_list/edit_my_list_item.dart';
+import 'package:project/widgets/lists/my_list/my_list_modal.dart';
 
 class MyListItem extends StatefulWidget {
   const MyListItem({
@@ -20,7 +20,7 @@ class _MyListItemState extends State<MyListItem> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => EditMyListItem(movie),
+      builder: (ctx) => MyListModal(movie),
     );
   }
 
@@ -56,12 +56,15 @@ class _MyListItemState extends State<MyListItem> {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      widget.movie.title,
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    Expanded(
+                      child: Text(
+                        widget.movie.title, 
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const Spacer(),

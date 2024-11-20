@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:project/models/movie.dart';
-import 'package:project/widgets/lists/watchlist/edit_watchlist_item.dart';
+import 'package:project/widgets/lists/watchlist/watchlist_modal.dart';
 
 class WatchlistItem extends StatefulWidget {
   const WatchlistItem({
@@ -20,7 +20,7 @@ class _WatchlistItemState extends State<WatchlistItem> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => EditWatchlistItem(movie),
+      builder: (ctx) => WatchlistModal(movie),
     );
   }
 
@@ -56,12 +56,15 @@ class _WatchlistItemState extends State<WatchlistItem> {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      widget.movie.title,
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    Expanded(
+                      child: Text(
+                        widget.movie.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],

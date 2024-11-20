@@ -21,18 +21,21 @@ class ListsButton extends StatelessWidget {
         onPressed: onClick,
         style: FilledButton.styleFrom(
           backgroundColor: isActive
-              ? Theme.of(context).colorScheme.inversePrimary
-              : const Color.fromARGB(255, 150, 125, 165),
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.secondary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: isActive
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ),
     );

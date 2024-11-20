@@ -45,7 +45,7 @@ class Reviews extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    rating.comment,
+                    rating.review,
                     style: const TextStyle(
                       color: Colors.white,
                     ),
