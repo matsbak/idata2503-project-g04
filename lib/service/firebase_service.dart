@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:project/models/movie.dart';
 
+/// Helper class to send http request to backend (Firebase).
 class FirebaseService {
   static const String baseUrl =
       'idata2503-project-g04-default-rtdb.europe-west1.firebasedatabase.app';
 
-  /// Fetch Firebase key for a movie by its ID
+  /// Fetch Firebase key for a movie by its ID, used when interacting with
+  /// objects in Firebase
   static Future<String?> getFirebaseKeyByMovieId(int movieId) async {
     try {
       final url = Uri.https(baseUrl, 'saved-movies.json');
@@ -28,6 +30,8 @@ class FirebaseService {
     }
   }
 
+  /// Method to send http DELETE request to backend (Firebase). To
+  /// remove/delete a movie from backend database.
   static Future<void> removeMovieById(int movieId) async {
     try {
       final firebaseKey = await getFirebaseKeyByMovieId(movieId);

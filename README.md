@@ -32,7 +32,10 @@ for more information.
 
 1. Open the project folder in your preferred IDE
 2. Open an emulator or connect to a device etc.
-3. Run the command ```flutter run```
+3. Run the command:
+```bash
+  flutter run
+```
 
 #### Troubleshooting
 
@@ -41,12 +44,16 @@ If the project fails to build, repeat step 3.
 ### Project structure
 The main components of the app is slit up into differnet parts:
 
-- <b>lib/data</b> contains the dummy data used in the app.
+- <b>lib/forms</b> contains form logic for log in/out, as well as authenitacion with users.
 
 - <b>lib/models</b> contains the data classes or objects inside the app. These classes represents
 the data, e.g. the movies or reviews.
 
+- <b>lib/providers</b> contains provider logic to handle cross class data. Used so data is up to date everywhere in the project.
+
 - <b>lib/screens</b> contains the different screens the user can navigate inside the app.
+
+- <b>lib/service</b> contains service classes to seperate logic from the project so it can be reused. e.g. firebase methods for sending http requests.
 
 - <b>lib/widgets</b> contains all the different widgets used. These widgets are either large
 widgets or reused in different areas inside the app.
