@@ -158,7 +158,11 @@ class _MyListModalState extends ConsumerState<MyListModal> {
                     return null;
                   },
                   onChanged: (value) {
-                    if (double.tryParse(value)! % 0.5 == 0) {
+                    if (value.isNotEmpty &&
+                        value.length <= 3 &&
+                        double.tryParse(value)! > 0.0 &&
+                        double.tryParse(value)! <= 5.0 &&
+                        double.tryParse(value)! % 0.5 == 0) {
                       setState(() {
                         _enteredScore = double.parse(value);
                       });
