@@ -1,12 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:project/models/movie.dart';
 
 /// Helper class to send http request to backend (Firebase).
 class FirebaseService {
-  static const String baseUrl =
-      'idata2503-project-g04-default-rtdb.europe-west1.firebasedatabase.app';
+  static String baseUrl = dotenv.env['FIREBASE_BASE_URL'] ?? '';
 
   /// Fetch Firebase key for a movie by its ID, used when interacting with
   /// objects in Firebase
