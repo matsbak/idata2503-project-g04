@@ -72,8 +72,10 @@ class _MyListModalState extends ConsumerState<MyListModal> {
       margin: const EdgeInsets.only(
         top: 20.0,
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16.0,
+      padding: EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
