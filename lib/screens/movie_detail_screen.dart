@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/providers/ratings_notifier.dart';
 import 'package:project/service/firebase_service.dart';
 import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
 
 /// A screen representing the movie details screen. This screen shows a movie
 /// with every detail the movie has.
-class MovieDetailScreen extends ConsumerWidget {
+class MovieDetailScreen extends ConsumerStatefulWidget {
   const MovieDetailScreen({
     super.key,
     required this.movie,
@@ -18,14 +18,29 @@ class MovieDetailScreen extends ConsumerWidget {
 
   final Movie movie;
 
+  @override
+  ConsumerState<MovieDetailScreen> createState() => _MovieDetailScreenState();
+}
+
+class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(ratingsProvider.notifier)
+          .fetchRatings(widget.movie.id.toString());
+    });
+  }
+
   // TODO Fix context usage with async
   /// Adds a movie to the watch list
-  void _addToWatchList(BuildContext context, WidgetRef ref) async {
+  Future<void> _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
       final firebaseKey =
-          await FirebaseService.addMovieToFirebase(movie);
+          await FirebaseService.addMovieToFirebase(widget.movie);
       if (firebaseKey != null) {
-        ref.read(watchlistProvider.notifier).addToWatchlist(movie);
+        ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Movie added to watchlist')),
         );
@@ -38,11 +53,10 @@ class MovieDetailScreen extends ConsumerWidget {
   }
 
   /// Removes a movie from the watch list
-  void _removeFromWatchList(BuildContext context, WidgetRef ref) async {
+  Future<void> _removeFromWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      await FirebaseService.removeMovieById(movie.id);
-
-      ref.read(watchlistProvider.notifier).removeFromWatchlist(movie);
+      await FirebaseService.removeMovieById(widget.movie.id);
+      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Movie removed from watchlist')));
     } catch (error) {
@@ -53,16 +67,18 @@ class MovieDetailScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final watchlist = ref.watch(watchlistProvider);
     final myList = ref.watch(myListProvider);
     final isInLists =
-        watchlist.contains(movie) || myList.contains(movie);
+        watchlist.contains(widget.movie) || myList.contains(widget.movie);
+
+    final ratings = ref.watch(ratingsProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          movie.title,
+          widget.movie.title,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -82,13 +98,13 @@ class MovieDetailScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(10),
                   child: SizedBox(
                     height: 320,
-                    child: movie.poster,
+                    child: widget.movie.poster,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               Text(
-                movie.title,
+                widget.movie.title,
                 style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -103,7 +119,7 @@ class MovieDetailScreen extends ConsumerWidget {
                       Row(
                         children: [
                           Text(
-                            'Rating: ${movie.averageRating}',
+                            'Rating: ${widget.movie.averageRating}',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
@@ -111,7 +127,7 @@ class MovieDetailScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '(${movie.ratings.length})',
+                            '(${ratings.length})',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -120,7 +136,7 @@ class MovieDetailScreen extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      StarBuilder(rating: movie.averageRating),
+                      StarBuilder(rating: widget.movie.averageRating),
                     ],
                   ),
                   const Spacer(),
@@ -152,7 +168,7 @@ class MovieDetailScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 5),
-              for (final genre in movie.genres)
+              for (final genre in widget.movie.genres)
                 Text(
                   genre,
                   style: const TextStyle(
@@ -163,13 +179,13 @@ class MovieDetailScreen extends ConsumerWidget {
                 ),
               const SizedBox(height: 20),
               Text(
-                movie.description,
+                widget.movie.description,
                 style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
               const SizedBox(height: 12),
-              Reviews(ratings: movie.ratings),
+              Reviews(ratings: ratings),
             ],
           ),
         ),

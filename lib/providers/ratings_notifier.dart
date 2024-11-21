@@ -8,9 +8,9 @@ class RatingsNotifier extends StateNotifier<List<Rating>> {
   Future<void> fetchRatings(String movieId) async {
     try {
       final ratings = await FirebaseService.fetchRatingForMovie(movieId);
-      state = ratings;
+      state = ratings; // Update the state
     } catch (error) {
-      // Handle errors appropriately
+      state = []; // Clear state in case of error
     }
   }
 }
