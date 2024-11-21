@@ -22,7 +22,7 @@ class MyListModal extends ConsumerStatefulWidget {
 
 class _MyListModalState extends ConsumerState<MyListModal> {
   final _formKey = GlobalKey<FormState>();
-  var _enteredScore = 0.0;
+  var _enteredScore = 0.5;
   var _enteredReview = '';
   final _userId = 'test User';
 
@@ -120,21 +120,6 @@ class _MyListModalState extends ConsumerState<MyListModal> {
             const SizedBox(
               height: 8.0,
             ),
-            Row(
-              children: [
-                StarBuilder(rating: _enteredScore),
-                const SizedBox(
-                  width: 4.0,
-                ),
-                Text(
-                  _enteredScore.toString(),
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Colors.white,
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12.0),
             Form(
               key: _formKey,
               child: Column(
@@ -150,42 +135,29 @@ class _MyListModalState extends ConsumerState<MyListModal> {
                   const SizedBox(
                     height: 8.0,
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Colors.white,
-                        ),
-                    initialValue: _enteredScore.toString(),
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.length > 3 ||
-                          double.tryParse(value) == null ||
-                          double.tryParse(value)! <= 0.0 ||
-                          double.tryParse(value)! > 5.0 ||
-                          double.tryParse(value)! % 0.5 != 0) {
-                        return 'Must be a half-decimal value between 0.0 and 5.0';
-                      }
-                      return null;
-                    },
+                  Slider(
+                    value: _enteredScore,
+                    min: 0.5,
+                    max: 5.0,
+                    divisions: 9,
+                    label: _enteredScore.toString(),
                     onChanged: (value) {
-                      if (value.isNotEmpty &&
-                          value.length <= 3 &&
-                          double.tryParse(value)! > 0.0 &&
-                          double.tryParse(value)! <= 5.0 &&
-                          double.tryParse(value)! % 0.5 == 0) {
-                        setState(() {
-                          _enteredScore = double.parse(value);
-                        });
-                      }
+                      setState(() {
+                        _enteredScore = value;
+                      });
                     },
+                  ),
+                  Row(
+                    children: [
+                      StarBuilder(rating: _enteredScore),
+                      const SizedBox(width: 8),
+                      Text(
+                        _enteredScore.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.white,
+                            ),
+                      )
+                    ],
                   ),
                   const SizedBox(
                     height: 16.0,
