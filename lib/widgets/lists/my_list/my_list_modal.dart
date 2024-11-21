@@ -26,15 +26,22 @@ class _MyListModalState extends ConsumerState<MyListModal> {
   var _enteredReview = '';
   final _userId = 'test User';
 
-  void _removeFromMyList(String title) {
-    ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
+  void _removeFromMyList(String title) async {
+    try {
+      await FirebaseService.removeMovieById(widget.movie.id);
+      ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
 
-    Navigator.pop(context);
+      Navigator.pop(context);
 
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$title removed from my list'),
-    ));
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$title removed from my list'),
+      ));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to remove movie fomr mylist: $error'),
+      ));
+    }
   }
 
   /// Saves user input and adds review to backend.
