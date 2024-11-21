@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:project/models/movie.dart';
+import 'package:project/models/rating.dart';
 
 /// Helper class to send http request to backend (Firebase).
 class FirebaseService {
@@ -76,6 +77,69 @@ class FirebaseService {
       }
     } catch (error) {
       throw Exception("Error adding movie: $error");
+    }
+  }
+
+  /// Method to add rating to a movie in backend
+  static Future<void> addRatingToMovie(int movieId, Rating rating) async {
+    try {
+      final movieFirebaseKey = await getFirebaseKeyByMovieId(movieId);
+      if (movieFirebaseKey == null) {
+        throw Exception("Movie not found in Firebase");
+      }
+
+      final url = Uri.https(
+        baseUrl,
+        'saved-movies/$movieFirebaseKey/ratings.json',
+      );
+
+      // Send POST request to save rating
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'score': rating.score,
+          'review': rating.review,
+          'userId': rating.userId,
+          'date': rating.date.toIso8601String(),
+        }),
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception("Failed to add rating");
+      }
+    } catch (error) {
+      throw Exception("Error adding rating: $error");
+    }
+  }
+
+  static Future<List<Rating>> fetchRatingForMovie(
+      String movieFirebaseKey) async {
+    try {
+      final url = Uri.https(
+        baseUrl,
+        'saved-movies/$movieFirebaseKey/ratings.json',
+      );
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic>? ratingsData =
+            json.decode(response.body) as Map<String, dynamic>?;
+
+        if (ratingsData != null) {
+          return ratingsData.values.map((ratingsData) {
+            return Rating(
+              score: ratingsData['score'],
+              review: ratingsData['review'],
+              userId: ratingsData['userId'],
+              date: DateTime.parse(ratingsData['date']),
+            );
+          }).toList();
+        }
+      }
+      return [];
+    } catch (error) {
+      throw Exception("Error fetching ratings: $error");
     }
   }
 }
