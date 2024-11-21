@@ -27,9 +27,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(ratingsProvider.notifier)
-          .fetchRatings(widget.movie.id.toString());
+      ref.read(ratingsProvider.notifier).fetchRatings(widget.movie.id);
     });
   }
 
@@ -74,6 +72,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
         watchlist.contains(widget.movie) || myList.contains(widget.movie);
 
     final ratings = ref.watch(ratingsProvider);
+    final averageRating = ref.watch(ratingsProvider.notifier).averageRating;
 
     return Scaffold(
       appBar: AppBar(
@@ -119,7 +118,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                       Row(
                         children: [
                           Text(
-                            'Rating: ${widget.movie.averageRating}',
+                            'Rating: $averageRating',
                             style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
@@ -136,7 +135,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      StarBuilder(rating: widget.movie.averageRating),
+                      StarBuilder(rating: averageRating),
                     ],
                   ),
                   const Spacer(),

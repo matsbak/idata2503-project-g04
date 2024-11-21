@@ -113,13 +113,18 @@ class FirebaseService {
     }
   }
 
-  static Future<List<Rating>> fetchRatingForMovie(
-      String movieFirebaseKey) async {
+  static Future<List<Rating>> fetchRatingForMovie(int movieId) async {
     try {
+      final movieFirebaseKey = await getFirebaseKeyByMovieId(movieId);
+      if (movieFirebaseKey == null) {
+        throw Exception("Movie not found in Firebase");
+      }
+
       final url = Uri.https(
         baseUrl,
         'saved-movies/$movieFirebaseKey/ratings.json',
       );
+
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -127,12 +132,12 @@ class FirebaseService {
             json.decode(response.body) as Map<String, dynamic>?;
 
         if (ratingsData != null) {
-          return ratingsData.values.map((ratingsData) {
+          return ratingsData.values.map((ratingData) {
             return Rating(
-              score: ratingsData['score'],
-              review: ratingsData['review'],
-              userId: ratingsData['userId'],
-              date: DateTime.parse(ratingsData['date']),
+              score: ratingData['score'],
+              review: ratingData['review'],
+              userId: ratingData['userId'],
+              date: DateTime.parse(ratingData['date']),
             );
           }).toList();
         }
