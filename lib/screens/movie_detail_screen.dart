@@ -31,7 +31,6 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
     });
   }
 
-  // TODO Fix context usage with async
   /// Adds a movie to the watch list
   Future<void> _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {

@@ -8,7 +8,7 @@ import 'package:project/providers/lists_provider.dart';
 import 'package:project/service/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
-// TODO Make main content area scrollable
+// TODO Make main content area scrollable instead of entire modal
 class MyListModal extends ConsumerStatefulWidget {
   const MyListModal(this.movie, {super.key});
 
@@ -122,6 +122,21 @@ class _MyListModalState extends ConsumerState<MyListModal> {
             const SizedBox(
               height: 8.0,
             ),
+            Row(
+              children: [
+                StarBuilder(rating: _enteredScore),
+                const SizedBox(width: 8),
+                Text(
+                  _enteredScore.toString(),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Colors.white,
+                      ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 16.0,
+            ),
             Form(
               key: _formKey,
               child: Column(
@@ -149,20 +164,8 @@ class _MyListModalState extends ConsumerState<MyListModal> {
                       });
                     },
                   ),
-                  Row(
-                    children: [
-                      StarBuilder(rating: _enteredScore),
-                      const SizedBox(width: 8),
-                      Text(
-                        _enteredScore.toString(),
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.white,
-                            ),
-                      )
-                    ],
-                  ),
                   const SizedBox(
-                    height: 16.0,
+                    height: 8.0,
                   ),
                   Text(
                     'Add a review?',
@@ -196,6 +199,9 @@ class _MyListModalState extends ConsumerState<MyListModal> {
                     onSaved: (value) {
                       _enteredReview = value!;
                     },
+                  ),
+                  const SizedBox(
+                    height: 16.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

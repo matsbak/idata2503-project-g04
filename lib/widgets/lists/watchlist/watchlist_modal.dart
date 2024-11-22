@@ -6,7 +6,7 @@ import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/widgets/starbuilder.dart';
 
-// TODO Make main content area srollable instead of only description
+// TODO Make main content area scrollable instead of entire modal
 class WatchlistModal extends ConsumerStatefulWidget {
   const WatchlistModal(this.movie, {super.key});
 
@@ -170,6 +170,9 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
                   ],
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 16.0,
             ),
             Container(
               margin: const EdgeInsets.symmetric(
