@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
+import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/providers/ratings_notifier.dart';
 import 'package:project/service/firebase_service.dart';
@@ -34,12 +36,21 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Adds a movie to the watch list
   Future<void> _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      final firebaseKey =
-          await FirebaseService.addMovieToFirebase(widget.movie);
-      if (firebaseKey != null) {
-        ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+      // Get the current user's uid from the authentication provider
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        // Add the movie to the user's Firestore document
+        final firebaseKey =
+            await FirebaseService.addMovieToFirebase(widget.movie, uid!);
+        if (firebaseKey != null) {
+          ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Movie added to watchlist')),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Movie added to watchlist')),
+          const SnackBar(content: Text('User not logged in.')),
         );
       }
     } catch (error) {
@@ -52,10 +63,13 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Removes a movie from the watch list
   Future<void> _removeFromWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      await FirebaseService.removeMovieById(widget.movie.id);
-      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Movie removed from watchlist')));
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        await FirebaseService.removeMovieById(widget.movie.id, uid);
+        ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Movie removed from watchlist')));
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Failed to remove moive to watchlist: $error"),

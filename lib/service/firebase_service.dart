@@ -1,19 +1,17 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 
-/// Helper class to send http request to backend (Firebase).
 class FirebaseService {
   static String baseUrl = dotenv.env['FIREBASE_BASE_URL'] ?? '';
 
-  /// Fetch Firebase key for a movie by its ID, used when interacting with
-  /// objects in Firebase
-  static Future<String?> getFirebaseKeyByMovieId(int movieId) async {
+  /// Fetch Firebase key for a movie by its ID within a specific user's collection
+  static Future<String?> getFirebaseKeyByMovieId(
+      int movieId, String uid) async {
     try {
-      final url = Uri.https(baseUrl, 'saved-movies.json');
+      final url = Uri.https(baseUrl, 'users/$uid/saved-movies.json');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -31,16 +29,16 @@ class FirebaseService {
     }
   }
 
-  /// Method to send http DELETE request to backend (Firebase). To
-  /// remove/delete a movie from backend database.
-  static Future<void> removeMovieById(int movieId) async {
+  /// Method to send http DELETE request to backend (Firebase) to remove a movie from a user's collection
+  static Future<void> removeMovieById(int movieId, String uid) async {
     try {
-      final firebaseKey = await getFirebaseKeyByMovieId(movieId);
+      final firebaseKey = await getFirebaseKeyByMovieId(movieId, uid);
       if (firebaseKey == null) {
         throw Exception("Movie not found in Firebase");
       }
 
-      final url = Uri.https(baseUrl, 'saved-movies/$firebaseKey.json');
+      final url =
+          Uri.https(baseUrl, 'users/$uid/saved-movies/$firebaseKey.json');
       final response = await http.delete(url);
 
       if (response.statusCode != 200) {
@@ -53,11 +51,10 @@ class FirebaseService {
     }
   }
 
-  /// Method to send http POST request to backend (Firebase). To add movie to
-  /// backend database.
-  static Future<String?> addMovieToFirebase(Movie movie) async {
+  /// Method to send http POST request to backend (Firebase) to add a movie to a user's collection
+  static Future<String?> addMovieToFirebase(Movie movie, String uid) async {
     try {
-      final url = Uri.https(baseUrl, 'saved-movies.json');
+      final url = Uri.https(baseUrl, 'users/$uid/saved-movies.json');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -73,24 +70,25 @@ class FirebaseService {
         final responseData = json.decode(response.body);
         return responseData['name'];
       } else {
-        throw throw Exception('Failed to add movie to Firebase');
+        throw Exception('Failed to add movie to Firebase');
       }
     } catch (error) {
       throw Exception("Error adding movie: $error");
     }
   }
 
-  /// Method to add rating to a movie in backend
+  /// Method to add a rating to a movie in backend
   static Future<void> addRatingToMovie(int movieId, Rating rating) async {
     try {
-      final movieFirebaseKey = await getFirebaseKeyByMovieId(movieId);
+      final movieFirebaseKey =
+          await getFirebaseKeyByMovieId(movieId, rating.userId);
       if (movieFirebaseKey == null) {
         throw Exception("Movie not found in Firebase");
       }
 
       final url = Uri.https(
         baseUrl,
-        'saved-movies/$movieFirebaseKey/ratings.json',
+        'users/${rating.userId}/saved-movies/$movieFirebaseKey/ratings.json',
       );
 
       // Send POST request to save rating
@@ -113,18 +111,10 @@ class FirebaseService {
     }
   }
 
+  /// Method to fetch ratings for a movie
   static Future<List<Rating>> fetchRatingForMovie(int movieId) async {
     try {
-      final movieFirebaseKey = await getFirebaseKeyByMovieId(movieId);
-      if (movieFirebaseKey == null) {
-        throw Exception("Movie not found in Firebase");
-      }
-
-      final url = Uri.https(
-        baseUrl,
-        'saved-movies/$movieFirebaseKey/ratings.json',
-      );
-
+      final url = Uri.https(baseUrl, 'shared-movies/$movieId/ratings.json');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {

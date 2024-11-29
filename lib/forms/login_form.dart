@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 final _firebase = FirebaseAuth.instance;
 
 class LoginForm extends StatefulWidget {
-  final VoidCallback onLoginSuccess;
+  final void Function(String uid) onLoginSuccess;
   final VoidCallback onSwitchToSignup; // Callback to switch to signup form
 
   const LoginForm({
@@ -32,8 +32,11 @@ class _LoginFormState extends State<LoginForm> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        //print('User: ${userCredentials.user?.email}');
-        widget.onLoginSuccess();
+        final user = userCredentials.user;
+        if (user != null) {
+          String uid = user.uid;
+          widget.onLoginSuccess(uid);
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email') {
           //....

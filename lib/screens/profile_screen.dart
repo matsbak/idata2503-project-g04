@@ -33,31 +33,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = ref.watch(authProvider);
+    final authState = ref.watch(authProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: isLoggedIn
+      body: authState.isLoggedIn
           ? _buildLoggedInContent(context, ref)
           : _showLoginForm
-          ? LoginForm(
-        onLoginSuccess: () {
-          ref.read(authProvider.notifier).login();
-        },
-        onSwitchToSignup: _toggleSignupForm, // Switch to signup
-      )
-          : _showSignupForm
-          ? SignupForm(
-        onSignupSuccess: () {
-          setState(() {
-            _showSignupForm = false; // Hide the signup form after success
-          });
-        },
-        onSwitchToLogin: _toggleLoginForm, // Switch to login
-      )
-          : _buildLoggedOutContent(context),
+              ? LoginForm(
+                  onLoginSuccess: (String uid) {
+                    ref.read(authProvider.notifier).login(uid);
+                  },
+                  onSwitchToSignup: _toggleSignupForm, // Switch to signup
+                )
+              : _showSignupForm
+                  ? SignupForm(
+                      onSignupSuccess: () {
+                        setState(() {
+                          _showSignupForm =
+                              false; // Hide the signup form after success
+                        });
+                      },
+                      onSwitchToLogin: _toggleLoginForm, // Switch to login
+                    )
+                  : _buildLoggedOutContent(context),
     );
   }
 
@@ -67,13 +68,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         const SizedBox(height: 20),
         CircleAvatar(
           radius: 40,
-          backgroundColor: Colors.grey.shade300, // Placeholder for profile image
+          backgroundColor:
+              Colors.grey.shade300, // Placeholder for profile image
           child: const Icon(Icons.person, size: 50, color: Colors.grey),
         ),
         const SizedBox(height: 10),
         Text(
           'Welcome, User!', // Placeholder username
-          style: Theme.of(context).textTheme.titleLarge, // Updated TextTheme property
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge, // Updated TextTheme property
         ),
         const SizedBox(height: 20),
         const SizedBox(height: 20),

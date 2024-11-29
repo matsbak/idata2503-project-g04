@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/service/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
 // TODO Make main content area scrollable instead of entire modal
@@ -20,16 +23,19 @@ class WatchlistModal extends ConsumerStatefulWidget {
 
 class _WatchlistModalState extends ConsumerState<WatchlistModal> {
   bool isAddedToMyList = false;
+  void _removeFromWatchlist(String title) async {
+    final uid = getUidIfLoggedIn(ref);
+    if (uid != null) {
+      await FirebaseService.removeMovieById(widget.movie.id, uid);
+      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
 
-  void _removeFromWatchlist(String title) {
-    ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+      Navigator.of(context).pop();
 
-    Navigator.of(context).pop();
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$title removed from watchlist'),
-    ));
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$title removed from watchlist'),
+      ));
+    }
   }
 
   void _addToMyList(String title) {
