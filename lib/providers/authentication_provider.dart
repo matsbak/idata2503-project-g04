@@ -1,17 +1,33 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthenticationProvider extends StateNotifier<bool> {
-  AuthenticationProvider() : super(false);
+class AuthenticationProvider extends StateNotifier<AuthenticationState> {
+  AuthenticationProvider() : super(AuthenticationState.loggedOut());
 
-  void login() {
-    state = true;
+  void login(String uid) {
+    state = AuthenticationState.loggedIn(uid);
   }
 
   void logout() {
-    state = false;
+    state = AuthenticationState.loggedOut();
   }
 }
 
-final authProvider = StateNotifierProvider<AuthenticationProvider, bool>((ref) {
+class AuthenticationState {
+  final bool isLoggedIn;
+  final String? uid;
+
+  AuthenticationState._({required this.isLoggedIn, this.uid});
+
+  factory AuthenticationState.loggedIn(String uid) {
+    return AuthenticationState._(isLoggedIn: true, uid: uid);
+  }
+
+  factory AuthenticationState.loggedOut() {
+    return AuthenticationState._(isLoggedIn: false);
+  }
+}
+
+final authProvider =
+    StateNotifierProvider<AuthenticationProvider, AuthenticationState>((ref) {
   return AuthenticationProvider();
 });

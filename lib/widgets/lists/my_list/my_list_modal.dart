@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
@@ -28,15 +29,18 @@ class _MyListModalState extends ConsumerState<MyListModal> {
 
   void _removeFromMyList(String title) async {
     try {
-      await FirebaseService.removeMovieById(widget.movie.id);
-      ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        await FirebaseService.removeMovieFromMylist(widget.movie.id, uid);
+        ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
 
-      Navigator.pop(context);
+        Navigator.pop(context);
 
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('$title removed from my list'),
-      ));
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('$title removed from my list'),
+        ));
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Failed to remove movie fomr mylist: $error'),

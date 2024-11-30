@@ -17,7 +17,7 @@ class WatchlistNotifier extends StateNotifier<List<Movie>> {
 class MyListNotifier extends StateNotifier<List<Movie>> {
   MyListNotifier() : super([]);
 
-  void addToMyList(Movie movie) {
+  void addToMyList(Movie movie) async {
     state = [...state, movie];
   }
 

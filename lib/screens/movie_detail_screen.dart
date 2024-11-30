@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
+import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/providers/ratings_notifier.dart';
 import 'package:project/service/firebase_service.dart';
@@ -34,12 +36,21 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Adds a movie to the watch list
   Future<void> _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      final firebaseKey =
-          await FirebaseService.addMovieToFirebase(widget.movie);
-      if (firebaseKey != null) {
-        ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+      // Get the current user's uid from the authentication provider
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        // Add the movie to the user's Firestore document
+        final firebaseKey =
+            await FirebaseService.addMovieToWatchlist(widget.movie, uid!);
+        if (firebaseKey != null) {
+          ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Movie added to watchlist')),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Movie added to watchlist')),
+          const SnackBar(content: Text('User not logged in.')),
         );
       }
     } catch (error) {
@@ -52,10 +63,13 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Removes a movie from the watch list
   Future<void> _removeFromWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      await FirebaseService.removeMovieById(widget.movie.id);
-      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Movie removed from watchlist')));
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        await FirebaseService.removeMovieFromWatchlist(widget.movie.id, uid);
+        ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Movie removed from watchlist')));
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Failed to remove moive to watchlist: $error"),
@@ -137,26 +151,37 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                       StarBuilder(rating: averageRating),
                     ],
                   ),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (isInLists) {
-                        _removeFromWatchList(context, ref);
-                      } else {
-                        _addToWatchList(context, ref);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondaryContainer),
-                    child: Text(
-                      isInLists ? 'Remove from Watchlist' : 'Add to Watchlist',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    if (isInLists) {
+                      _removeFromWatchList(context, ref);
+                    } else {
+                      _addToWatchList(context, ref);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isInLists
+                        ? Theme.of(context).colorScheme.errorContainer
+                        : Theme.of(context).colorScheme.secondaryContainer,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 8.0),
+                  ),
+                  icon: Icon(
+                    isInLists ? Icons.delete : Icons.add,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    isInLists ? 'Remove from Watchlist' : 'Add to Watchlist',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
               const Text(
                 'Genres:',
                 style: TextStyle(
@@ -165,16 +190,41 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 5),
-              for (final genre in widget.movie.genres)
-                Text(
-                  genre,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+              const SizedBox(height: 10),
+              Card(
+                color: Theme.of(context).colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.movie.genres.length,
+                    itemBuilder: (context, index) {
+                      final genre = widget.movie.genres[index];
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          left: index == 0 ? 0 : 5.0,
+                          right: 5.0,
+                        ),
+                        child: Chip(
+                          label: Text(
+                            genre,
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
+                            ),
+                          ),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                        ),
+                      );
+                    },
                   ),
                 ),
+              ),
               const SizedBox(height: 20),
               Text(
                 widget.movie.description,

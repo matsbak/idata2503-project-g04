@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/service/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
 // TODO Make main content area scrollable instead of entire modal
@@ -20,37 +23,70 @@ class WatchlistModal extends ConsumerStatefulWidget {
 
 class _WatchlistModalState extends ConsumerState<WatchlistModal> {
   bool isAddedToMyList = false;
+  void _removeFromWatchlist(String title) async {
+    final uid = getUidIfLoggedIn(ref);
+    if (uid != null) {
+      await FirebaseService.removeMovieFromWatchlist(widget.movie.id, uid);
+      ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
 
-  void _removeFromWatchlist(String title) {
-    ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
+      Navigator.of(context).pop();
 
-    Navigator.of(context).pop();
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$title removed from watchlist'),
-    ));
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$title removed from watchlist'),
+      ));
+    }
   }
 
-  void _addToMyList(String title) {
-    ref.read(myListProvider.notifier).addToMyList(widget.movie);
-    ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
-    setState(() {
-      isAddedToMyList = true;
-    });
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$title added to my list'),
-    ));
+  Future<void> _addToMyList(BuildContext context, WidgetRef ref) async {
+    try {
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        final firebaseKey =
+            await FirebaseService.addMovieToMylist(widget.movie, uid);
+        if (firebaseKey != null) {
+          ref.read(myListProvider.notifier).addToMyList(widget.movie);
+          ref
+              .read(watchlistProvider.notifier)
+              .removeFromWatchlist(widget.movie);
+          setState(() {
+            isAddedToMyList = true;
+          });
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('IDK.')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to add movie to mylist: $error")),
+      );
+    }
+    //ScaffoldMessenger.of(context).clearSnackBars();
+    //ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //  content: Text('$title added to my list'),
+    //));
   }
 
-  void _removeFromMyList() {
-    ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
-    ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
-    setState(() {
-      isAddedToMyList = false;
-    });
+  //Removes a movie form the mylist, and adds it back to wtachlist
+  Future<void> _removeFromMyList(BuildContext context, WidgetRef ref) async {
+    try {
+      final uid = getUidIfLoggedIn(ref);
+      if (uid != null) {
+        await FirebaseService.removeMovieFromMylist(widget.movie.id, uid);
+        ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
+        await FirebaseService.addMovieToWatchlist(widget.movie, uid);
+        ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
+        setState(() {
+          isAddedToMyList = false;
+        });
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Failed to remove moive to mylist: $error"),
+      ));
+    }
   }
 
   @override
@@ -144,10 +180,10 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
             FilledButton(
               onPressed: isAddedToMyList
                   ? () {
-                      _removeFromMyList();
+                      _removeFromMyList(context, ref);
                     }
                   : () {
-                      _addToMyList(widget.movie.title);
+                      _addToMyList(context, ref);
                     },
               child: SizedBox(
                 width: 125.0,
@@ -179,9 +215,11 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
                 vertical: 10.0,
               ),
               child: FilledButton.tonal(
-                onPressed: () {
-                  _removeFromWatchlist(widget.movie.title);
-                },
+                onPressed: isAddedToMyList
+                    ? null
+                    : () {
+                        _removeFromWatchlist(widget.movie.title);
+                      },
                 style: FilledButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.errorContainer,
                 ),

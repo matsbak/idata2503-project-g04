@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 final _firebase = FirebaseAuth.instance;
 
 class LoginForm extends StatefulWidget {
-  final VoidCallback onLoginSuccess;
+  final void Function(String uid) onLoginSuccess;
   final VoidCallback onSwitchToSignup; // Callback to switch to signup form
 
   const LoginForm({
@@ -32,8 +32,11 @@ class _LoginFormState extends State<LoginForm> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        //print('User: ${userCredentials.user?.email}');
-        widget.onLoginSuccess();
+        final user = userCredentials.user;
+        if (user != null) {
+          String uid = user.uid;
+          widget.onLoginSuccess(uid);
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email') {
           //....
@@ -49,42 +52,57 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
-            style: const TextStyle(color: Colors.white),
-            keyboardType: TextInputType.emailAddress,
-            validator: (value) => value == null || value.isEmpty
-                ? 'Please enter your email'
-                : null,
-          ),
-          TextFormField(
-            controller: _passwordController,
-            decoration: const InputDecoration(labelText: 'Password'),
-            style: const TextStyle(color: Colors.white),
-            obscureText: true,
-            validator: (value) => value == null || value.isEmpty
-                ? 'Please enter your password'
-                : null,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _login,
-            child: const Text('Login'),
-          ),
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: widget.onSwitchToSignup,
-            child: const Text(
-              'Not a user yet? Sign up',
-              style: TextStyle(color: Colors.white),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+              style: const TextStyle(color: Colors.white),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please enter your email'
+                  : null,
             ),
-          ),
-        ],
+            TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
+              style: const TextStyle(color: Colors.white),
+              obscureText: true,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please enter your password'
+                  : null,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _login,
+              child: const Text('Login'),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Not a user yet?',
+                  style: TextStyle(color: Colors.white),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                TextButton(
+                  onPressed: widget.onSwitchToSignup,
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  child: const Text('Sign up'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

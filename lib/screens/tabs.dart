@@ -24,18 +24,21 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   List<Movie> _registeredMovies = [];
   int _selectedPageIndex = 0;
+  final _totalPages = 10;
   bool _isLoading = true;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _loadMovies();
+    for (var i = 1; i <= _totalPages; i++) {
+      _loadMovies(i);
+    }
   }
 
-  void _loadMovies() async {
+  void _loadMovies(int page) async {
     final url = Uri.parse(
-      'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+      'https://api.themoviedb.org/3/movie/popular?language=en-US&page=$page',
     );
     try {
       final response = await http.get(
@@ -77,7 +80,7 @@ class _TabsScreenState extends State<TabsScreen> {
         // Check for error once more after loading genres
         if (_error == null) {
           setState(() {
-            _registeredMovies = loadedMovies;
+            _registeredMovies = [..._registeredMovies, ...loadedMovies];
             _isLoading = false;
           });
         }
