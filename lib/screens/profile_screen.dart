@@ -73,12 +73,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: const Icon(Icons.person, size: 50, color: Colors.grey),
         ),
         const SizedBox(height: 10),
-        Text(
-          'Welcome, User!', // Placeholder username
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge, // Updated TextTheme property
-        ),
+        Text('Welcome, User!', // Placeholder username
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                )),
         const SizedBox(height: 20),
         const SizedBox(height: 20),
         Expanded(
