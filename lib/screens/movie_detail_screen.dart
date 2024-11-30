@@ -190,16 +190,41 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 5),
-              for (final genre in widget.movie.genres)
-                Text(
-                  genre,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+              const SizedBox(height: 10),
+              Card(
+                color: Theme.of(context).colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.movie.genres.length,
+                    itemBuilder: (context, index) {
+                      final genre = widget.movie.genres[index];
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          left: index == 0 ? 0 : 5.0,
+                          right: 5.0,
+                        ),
+                        child: Chip(
+                          label: Text(
+                            genre,
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
+                            ),
+                          ),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                        ),
+                      );
+                    },
                   ),
                 ),
+              ),
               const SizedBox(height: 20),
               Text(
                 widget.movie.description,
