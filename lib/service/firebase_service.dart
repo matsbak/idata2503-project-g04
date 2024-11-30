@@ -68,6 +68,35 @@ class FirebaseService {
     }
   }
 
+  /// Removes movie from Firebase, if no user has it in its lists.
+  static Future<void> removeMovieFromFirebase(int movieId) async {
+    bool isStored = false;
+    // Checks if any users has stored the movie in their lists.
+    try {
+      final url = Uri.https(baseUrl, 'users.json');
+      final response = await http.get(url);
+      final Map<String, dynamic> usersData = json.decode(response.body);
+      for (final entry in usersData.entries) {
+        for (final listEntry in entry.value) {
+          if (listEntry.value == movieId) {
+            isStored = true;
+          }
+        }
+      }
+    } catch (error) {
+      throw Exception("Error fetching users data: $error");
+    }
+    // If no users has the movie in their lists, remove movie from Firebase.
+    if (!isStored) {
+      try {
+        final url = Uri.https(baseUrl, 'movies.json');
+        await http.delete(url);
+      } catch (error) {
+        throw Exception("Error deleting from movies: $error");
+      }
+    }
+  }
+
   /// Method to send http DELETE request to backend (Firebase) to remove a movie from a user's collection
   static Future<void> removeMovieFromWatchlist(int movieId, String uid) async {
     try {
@@ -88,6 +117,7 @@ class FirebaseService {
     } catch (error) {
       throw Exception("Error deleting movie: $error");
     }
+    removeMovieFromFirebase(movieId);
   }
 
   //Removes a movie from mylist
@@ -109,13 +139,13 @@ class FirebaseService {
     } catch (error) {
       throw Exception("Error deleting movie: $error");
     }
+    removeMovieFromFirebase(movieId);
   }
 
   /// Method to send http POST request to backend (Firebase) to add a movie to a user's collection
   static Future<String?> addMovieToWatchlist(Movie movie, String uid) async {
+    addMovieToFirebase(movie);
     try {
-      addMovieToFirebase(movie);
-
       final url = Uri.https(baseUrl, 'users/$uid/watchlist.json');
       final response = await http.post(
         url,
@@ -136,7 +166,6 @@ class FirebaseService {
 
   //Mehtod to handle the changing of list types
   static Future<String?> addMovieToMylist(Movie movie, String uid) async {
-    await removeMovieFromWatchlist(movie.id, uid);
     try {
       final url = Uri.https(baseUrl, 'users/$uid/mylist.json');
       final response = await http.post(
@@ -146,6 +175,7 @@ class FirebaseService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        removeMovieFromWatchlist(movie.id, uid);
         final responseData = json.decode(response.body);
         return responseData['name'];
       } else {
