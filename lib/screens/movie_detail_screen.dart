@@ -151,26 +151,37 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
                       StarBuilder(rating: averageRating),
                     ],
                   ),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (isInLists) {
-                        _removeFromWatchList(context, ref);
-                      } else {
-                        _addToWatchList(context, ref);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondaryContainer),
-                    child: Text(
-                      isInLists ? 'Remove from Watchlist' : 'Add to Watchlist',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    if (isInLists) {
+                      _removeFromWatchList(context, ref);
+                    } else {
+                      _addToWatchList(context, ref);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isInLists
+                        ? Theme.of(context).colorScheme.errorContainer
+                        : Theme.of(context).colorScheme.secondaryContainer,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 8.0),
+                  ),
+                  icon: Icon(
+                    isInLists ? Icons.delete : Icons.add,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    isInLists ? 'Remove from Watchlist' : 'Add to Watchlist',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
               const Text(
                 'Genres:',
                 style: TextStyle(
