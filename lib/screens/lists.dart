@@ -39,27 +39,47 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
+    return DefaultTabController(
+      length: 2, // Two tabs: Watchlist and My List
       child: Column(
         children: [
-          Row(
-            children: [
-              ListsButton(
+          // TabBar for switching between Watchlist and My List
+          TabBar(
+            labelColor: Theme.of(context).colorScheme.primary,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            tabs: const [
+              Tab(
                 text: 'Watchlist',
-                isActive: _isWatchlistActive,
-                onClick: switchToWatchlist,
+                icon: Icon(Icons.watch_later_outlined),
               ),
-              const Spacer(),
-              ListsButton(
+              Tab(
                 text: 'My List',
-                isActive: _isMyListActive,
-                onClick: switchToMyList,
+                icon: Icon(Icons.list_alt),
               ),
             ],
           ),
-          if (_currentList == 'watchlist') Watchlist(movies: ref.watch(watchlistProvider)),
-          if (_currentList == 'mylist') MyList(movies: ref.watch(myListProvider)),
+          // Expanded to display TabBarView with the respective lists
+          Expanded(
+            child: TabBarView(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  child: Watchlist(
+                    movies: ref.watch(watchlistProvider),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  child: MyList(
+                    movies: ref.watch(myListProvider),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
