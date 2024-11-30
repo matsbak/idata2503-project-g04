@@ -9,16 +9,16 @@ class FirebaseService {
 
   /// Fetch Firebase key for a movie by its ID within a specific user's collection
   static Future<String?> getFirebaseKeyByMovieId(
-      int movieId, String uid) async {
+      int movieId, String uid, String list) async {
     try {
-      final url = Uri.https(baseUrl, 'users/$uid/watchlist.json');
+      final url = Uri.https(baseUrl, 'users/$uid/$list.json');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> moviesData =
             json.decode(response.body) as Map<String, dynamic>;
         for (var entry in moviesData.entries) {
-          if (entry.value['id'] == movieId) {
+          if (entry.value == movieId) {
             return entry.key; // Return the Firebase key
           }
         }
@@ -29,31 +29,50 @@ class FirebaseService {
     }
   }
 
-  static Future<String?> getFirebaseKeyByMovieIdInMyList(
-      int movieId, String uid) async {
+  /// Adds a movie Firebase if it doesn't already exist
+  // TODO CHECK IF WORKS, when fetching is correct
+  static Future<void> addMovieToFirebase(Movie movie) async {
+    bool isStored = false;
+    // Checks if movie exists in firebase.
     try {
-      final url = Uri.https(baseUrl, 'users/$uid/mylist.json');
+      final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> moviesData =
-            json.decode(response.body) as Map<String, dynamic>;
-        for (var entry in moviesData.entries) {
-          if (entry.value['id'] == movieId) {
-            return entry.key; // Return the Firebase key
+      if (response.body != 'null') {
+        final Map<String, dynamic> moviesData = json.decode(response.body);
+        for (final entry in moviesData.entries) {
+          if (entry.value['id'] == movie.id) {
+            isStored = true;
           }
         }
       }
-      return null; // Return null if not found.
     } catch (error) {
-      throw Exception("Error fetching Firebase key: $error");
+      throw Exception("Error fetching movies: $error");
+    }
+    // If movie doesn't exist add movie to Firebase.
+    if (!isStored) {
+      try {
+        final url = Uri.https(baseUrl, 'movies.json');
+        await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'id': movie.id,
+            'title': movie.title,
+            'description': movie.description,
+            'posterPath': movie.posterPath,
+          }),
+        );
+      } catch (error) {
+        throw Exception("Error adding to movies: $error");
+      }
     }
   }
 
   /// Method to send http DELETE request to backend (Firebase) to remove a movie from a user's collection
   static Future<void> removeMovieFromWatchlist(int movieId, String uid) async {
     try {
-      final firebaseKey = await getFirebaseKeyByMovieId(movieId, uid);
+      final firebaseKey =
+          await getFirebaseKeyByMovieId(movieId, uid, 'watchlist');
       if (firebaseKey == null) {
         throw Exception("Movie not found in Firebase");
       }
@@ -74,7 +93,7 @@ class FirebaseService {
   //Removes a movie from mylist
   static Future<void> removeMovieFromMylist(int movieId, String uid) async {
     try {
-      final firebaseKey = await getFirebaseKeyByMovieIdInMyList(movieId, uid);
+      final firebaseKey = await getFirebaseKeyByMovieId(movieId, uid, 'mylist');
       if (firebaseKey == null) {
         throw Exception("Movie not found in Firebase");
       }
@@ -95,16 +114,13 @@ class FirebaseService {
   /// Method to send http POST request to backend (Firebase) to add a movie to a user's collection
   static Future<String?> addMovieToWatchlist(Movie movie, String uid) async {
     try {
+      addMovieToFirebase(movie);
+
       final url = Uri.https(baseUrl, 'users/$uid/watchlist.json');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'id': movie.id,
-          'title': movie.title,
-          'description': movie.description,
-          'posterPath': movie.posterPath,
-        }),
+        body: json.encode(movie.id),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -126,12 +142,7 @@ class FirebaseService {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'id': movie.id,
-          'title': movie.title,
-          'description': movie.description,
-          'posterPath': movie.posterPath,
-        }),
+        body: json.encode(movie.id),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -149,7 +160,7 @@ class FirebaseService {
   static Future<void> addRatingToMovie(int movieId, Rating rating) async {
     try {
       final movieFirebaseKey =
-          await getFirebaseKeyByMovieIdInMyList(movieId, rating.userId);
+          await getFirebaseKeyByMovieId(movieId, rating.userId, 'mylist');
       if (movieFirebaseKey == null) {
         throw Exception("Movie not found in Firebase");
       }
