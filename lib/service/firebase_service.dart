@@ -29,11 +29,10 @@ class FirebaseService {
     }
   }
 
-  /// Adds a movie Firebase if it doesn't already exist
-  // TODO CHECK IF WORKS, when fetching is correct
+  /// Adds a movie Firebase if it does not already exist
   static Future<void> addMovieToFirebase(Movie movie) async {
     bool isStored = false;
-    // Checks if movie exists in firebase.
+    // Checks if movie already exists in Firebase
     try {
       final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
@@ -48,7 +47,7 @@ class FirebaseService {
     } catch (error) {
       throw Exception("Error fetching movies: $error");
     }
-    // If movie doesn't exist add movie to Firebase.
+    // Adds movie to Firebase if it does not already exist
     if (!isStored) {
       try {
         final url = Uri.https(baseUrl, 'movies.json');
@@ -68,25 +67,31 @@ class FirebaseService {
     }
   }
 
-  /// Removes movie from Firebase, if no user has it in its lists.
+  /// Removes a movie from Firebase if no user has it in either of its lists.
   static Future<void> removeMovieFromFirebase(int movieId) async {
     bool isStored = false;
-    // Checks if any users has stored the movie in their lists.
+    // Checks if any user has the movie stored in either of its lists
     try {
-      final url = Uri.https(baseUrl, 'users.json');
-      final response = await http.get(url);
-      final Map<String, dynamic> usersData = json.decode(response.body);
-      for (final entry in usersData.entries) {
-        for (final listEntry in entry.value) {
-          if (listEntry.value == movieId) {
-            isStored = true;
+      var url = Uri.https(baseUrl, 'users.json');
+      var response = await http.get(url);
+
+      if (response.body != 'null') {
+        final Map<String, dynamic> usersData = json.decode(response.body);
+
+        for (final list in usersData.values) {
+          for (final listItem in list.values) {
+            for (final mId in listItem.values) {
+              if (mId == movieId) {
+                isStored = true;
+              }
+            }
           }
         }
       }
     } catch (error) {
       throw Exception("Error fetching users data: $error");
     }
-    // If no users has the movie in their lists, remove movie from Firebase.
+    // Removes movie from Firebase if no user has it in either of its lists
     if (!isStored) {
       try {
         final url = Uri.https(baseUrl, 'movies.json');
