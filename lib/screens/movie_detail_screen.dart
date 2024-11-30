@@ -41,7 +41,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
       if (uid != null) {
         // Add the movie to the user's Firestore document
         final firebaseKey =
-            await FirebaseService.addMovieToFirebase(widget.movie, uid!);
+            await FirebaseService.addMovieToWatchlist(widget.movie, uid!);
         if (firebaseKey != null) {
           ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -65,7 +65,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
     try {
       final uid = getUidIfLoggedIn(ref);
       if (uid != null) {
-        await FirebaseService.removeMovieById(widget.movie.id, uid);
+        await FirebaseService.removeMovieFromWatchlist(widget.movie.id, uid);
         ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Movie removed from watchlist')));

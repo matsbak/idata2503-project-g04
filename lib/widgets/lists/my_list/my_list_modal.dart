@@ -31,7 +31,7 @@ class _MyListModalState extends ConsumerState<MyListModal> {
     try {
       final uid = getUidIfLoggedIn(ref);
       if (uid != null) {
-        await FirebaseService.removeMovieById(widget.movie.id, uid);
+        await FirebaseService.removeMovieFromMylist(widget.movie.id, uid);
         ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
 
         Navigator.pop(context);
