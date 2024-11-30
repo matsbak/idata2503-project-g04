@@ -47,49 +47,64 @@ class _SignupFormState extends State<SignupForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          //TextFormField(
-          //  decoration: const InputDecoration(labelText: 'Name'),
-          //  keyboardType: TextInputType.name,
-          //  validator: (value) => value == null || value.isEmpty
-          //      ? 'Please enter your name'
-          //      : null,
-          //),
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
-            style: const TextStyle(color: Colors.white),
-            keyboardType: TextInputType.emailAddress,
-            validator: (value) => value == null || value.isEmpty
-                ? 'Please enter your email'
-                : null,
-          ),
-          TextFormField(
-            controller: _passwordController,
-            decoration: const InputDecoration(labelText: 'Password'),
-            style: const TextStyle(color: Colors.white),
-            obscureText: true,
-            validator: (value) => value == null || value.isEmpty
-                ? 'Please enter your password'
-                : null,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _signup,
-            child: const Text('Sign Up'),
-          ),
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: widget.onSwitchToLogin,
-            child: const Text(
-              'Already a user? Log in',
-              style: TextStyle(color: Colors.white),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            //TextFormField(
+            //  decoration: const InputDecoration(labelText: 'Name'),
+            //  keyboardType: TextInputType.name,
+            //  validator: (value) => value == null || value.isEmpty
+            //      ? 'Please enter your name'
+            //      : null,
+            //),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+              style: const TextStyle(color: Colors.white),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please enter your email'
+                  : null,
             ),
-          ),
-        ],
+            TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
+              style: const TextStyle(color: Colors.white),
+              obscureText: true,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Please enter your password'
+                  : null,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _signup,
+              child: const Text('Sign Up'),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Already a user?',
+                  style: TextStyle(color: Colors.white),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                TextButton(
+                  onPressed: widget.onSwitchToLogin,
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  child: const Text('Log in'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
