@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
-import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/service/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';

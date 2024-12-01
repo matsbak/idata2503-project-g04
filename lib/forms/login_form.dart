@@ -1,6 +1,4 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:project/forms/signup_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 //used in sigunupform as well, needs to be refactored

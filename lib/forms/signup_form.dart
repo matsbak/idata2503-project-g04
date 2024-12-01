@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project/forms/login_form.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -53,13 +52,6 @@ class _SignupFormState extends State<SignupForm> {
         key: _formKey,
         child: Column(
           children: [
-            //TextFormField(
-            //  decoration: const InputDecoration(labelText: 'Name'),
-            //  keyboardType: TextInputType.name,
-            //  validator: (value) => value == null || value.isEmpty
-            //      ? 'Please enter your name'
-            //      : null,
-            //),
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'Email'),
