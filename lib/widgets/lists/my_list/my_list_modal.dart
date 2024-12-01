@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,6 @@ class _MyListModalState extends ConsumerState<MyListModal> {
   final _formKey = GlobalKey<FormState>();
   var _enteredScore = 0.5;
   var _enteredReview = '';
-  final _userId = 'test User';
 
   void _removeFromMyList(String title) async {
     try {
@@ -50,17 +50,20 @@ class _MyListModalState extends ConsumerState<MyListModal> {
 
   /// Saves user input and adds review to backend.
   void _saveRating() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final String email = user?.email ?? 'test@user.com';
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final newRating = Rating(
         score: _enteredScore,
         review: _enteredReview,
-        userId: _userId,
+        userId: email,
         date: DateTime.now(),
       );
 
       try {
         await FirebaseService.addRatingToMovie(widget.movie.id, newRating);
+
         Navigator.of(context).pop(newRating);
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
