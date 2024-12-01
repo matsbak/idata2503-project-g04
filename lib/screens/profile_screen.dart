@@ -8,6 +8,7 @@ import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'settings_screen.dart';
+import 'package:project/widgets/rating_line_chart.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({
@@ -39,14 +40,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void _toggleLoginForm() {
     setState(() {
       _showLoginForm = !_showLoginForm;
-      _showSignupForm = false; // Hide signup form when showing login form
+      _showSignupForm = false;
     });
   }
 
   void _toggleSignupForm() {
     setState(() {
       _showSignupForm = !_showSignupForm;
-      _showLoginForm = false; // Hide login form when showing signup form
+      _showLoginForm = false;
     });
   }
 
@@ -75,23 +76,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       body: authState.isLoggedIn
           ? _buildLoggedInContent(context, ref)
           : _showLoginForm
-          ? LoginForm(
-        onLoginSuccess: (String uid) {
-          ref.read(authProvider.notifier).login(uid);
-        },
-        onSwitchToSignup: _toggleSignupForm, // Switch to signup
-      )
-          : _showSignupForm
-          ? SignupForm(
-        onSignupSuccess: () {
-          setState(() {
-            _showSignupForm =
-            false; // Hide the signup form after success
-          });
-        },
-        onSwitchToLogin: _toggleLoginForm, // Switch to login
-      )
-          : _buildLoggedOutContent(context),
+              ? LoginForm(
+                  onLoginSuccess: (String uid) {
+                    ref.read(authProvider.notifier).login(uid);
+                  },
+                  onSwitchToSignup: _toggleSignupForm,
+                )
+              : _showSignupForm
+                  ? SignupForm(
+                      onSignupSuccess: () {
+                        setState(() {
+                          _showSignupForm = false;
+                        });
+                      },
+                      onSwitchToLogin: _toggleLoginForm,
+                    )
+                  : _buildLoggedOutContent(context),
     );
   }
 
@@ -131,18 +131,92 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         const SizedBox(height: 20),
 
-        // Logout Button
-        Expanded(
-          child: Center(
-            child: ElevatedButton(
+            // Welcome Message
+            Text(
+              'Welcome, $username!',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+            ),
+            const SizedBox(height: 40),
+
+            // Stats Section
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Recently Added
+                Column(
+                  children: [
+                    Text(
+                      'Recently Added',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Inception',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 1,
+                    width: 40, // Space between items
+                  ),
+                ),
+                // Avg Rating
+                Column(
+                  children: [
+                    Text(
+                      'Avg Rating',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '4.5',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+
+            // Chart Section
+            const SizedBox(
+              height: 250,
+              child: RatingLineChart(),
+            ),
+            const SizedBox(height: 20),
+
+            // Logout Button
+            ElevatedButton(
               onPressed: () {
                 ref.read(authProvider.notifier).logout();
               },
               child: const Text('Logout'),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
