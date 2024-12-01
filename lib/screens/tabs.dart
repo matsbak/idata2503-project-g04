@@ -24,7 +24,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   List<Movie> _registeredMovies = [];
   int _selectedPageIndex = 0;
-  final _totalPages = 10;
+  final _totalPages = 5;
   bool _isLoading = true;
   String? _error;
 

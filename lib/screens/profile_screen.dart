@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project/forms/login_form.dart';
 import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
+import 'package:project/providers/lists_provider.dart';
 import 'settings_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {

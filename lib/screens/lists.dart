@@ -36,20 +36,19 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
               ),
             ],
           ),
-          Expanded(
+          // Expanded to display TabBarView with the respective lists
+          const Expanded(
             child: TabBarView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Watchlist(
-                    movies: ref.watch(watchlistProvider),
-                  ),
+                  padding:
+                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  child: Watchlist(),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: MyList(
-                    movies: ref.watch(myListProvider),
-                  ),
+                  padding:
+                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  child: MyList(),
                 ),
               ],
             ),
