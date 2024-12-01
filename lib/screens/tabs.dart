@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:project/models/movie.dart';
@@ -10,6 +7,7 @@ import 'package:project/screens/explore_screen.dart';
 import 'package:project/screens/lists.dart';
 import 'package:project/screens/profile_screen.dart';
 import 'package:project/screens/search_screen.dart';
+import 'package:project/service/api_service.dart';
 import 'package:project/widgets/movie/movie_list.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -24,108 +22,38 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   List<Movie> _registeredMovies = [];
   int _selectedPageIndex = 0;
-  final _totalPages = 10;
   bool _isLoading = true;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    for (var i = 1; i <= _totalPages; i++) {
-      _loadMovies(i);
-    }
+    _loadMovies();
   }
 
-  void _loadMovies(int page) async {
-    final url = Uri.parse(
-      'https://api.themoviedb.org/3/movie/popular?language=en-US&page=$page',
-    );
+  void _loadMovies() async {
+    final client = http.Client();
+
     try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
-          'accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode >= 400) {
-        setState(() {
-          _error = 'Failed to fetch data';
-        });
+      // Fetch all movies
+      final List<Movie> fetchedMovies = await ApiService.fetchMovies(client);
+      // Fetch all movie genres and the movie poster for each fetched movie
+      for (final movie in fetchedMovies) {
+        movie.genres = await ApiService.fetchMovieGenres(movie, client);
+        movie.poster = ApiService.fetchMoviePoster(movie);
       }
-
-      if (_error == null) {
-        final Map<String, dynamic> movieData = json.decode(response.body);
-        final List<Movie> loadedMovies = [];
-
-        for (final movie in movieData['results']) {
-          final loadedMovie = Movie(
-            id: movie['id'],
-            title: movie['title'],
-            description: movie['overview'],
-            posterPath: movie['poster_path'],
-          );
-
-          // Get posters for each movie
-          loadedMovie.poster = Image.network(
-              'https://image.tmdb.org/t/p/w600_and_h900_bestv2${loadedMovie.posterPath}');
-
-          // Load genres for each movie
-          _loadMovieGenres(loadedMovie);
-
-          loadedMovies.add(loadedMovie);
-        }
-
-        // Check for error once more after loading genres
-        if (_error == null) {
-          setState(() {
-            _registeredMovies = [..._registeredMovies, ...loadedMovies];
-            _isLoading = false;
-          });
-        }
-      }
+      // Apply fetched movie to registered movies
+      setState(() {
+        _registeredMovies = [...fetchedMovies];
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        _error = 'Something went wrong';
+        // TODO Test if right
+        _error = e.toString();
       });
-    }
-  }
-
-  void _loadMovieGenres(Movie movie) async {
-    final url = Uri.parse(
-      'https://api.themoviedb.org/3/movie/${movie.id}?language=en-US',
-    );
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
-          'accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode >= 400) {
-        setState(() {
-          _error = 'Failed to fetch data';
-        });
-      }
-
-      if (_error == null) {
-        final Map<String, dynamic> movieDetailsData =
-            json.decode(response.body);
-        final List<String> loadedGenres = [];
-
-        for (final genre in movieDetailsData['genres']) {
-          loadedGenres.add(genre['name']);
-        }
-
-        movie.genres = loadedGenres;
-      }
-    } catch (e) {
-      setState(() {
-        _error = 'Something went wrong';
-      });
+    } finally {
+      client.close();
     }
   }
 
