@@ -19,7 +19,7 @@ class MovieList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Popular',
+            'Popular Moives',
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
