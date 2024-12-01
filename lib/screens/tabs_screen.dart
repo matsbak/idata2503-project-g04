@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:project/models/movie.dart';
 import 'package:project/screens/explore_screen.dart';
-import 'package:project/screens/lists.dart';
+import 'package:project/screens/lists_screen.dart';
 import 'package:project/screens/profile_screen.dart';
 import 'package:project/screens/search_screen.dart';
 import 'package:project/service/api_service.dart';
