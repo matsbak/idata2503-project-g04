@@ -21,7 +21,6 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
       length: 2, // Two tabs: Watchlist and My List
       child: Column(
         children: [
-          // TabBar for switching between Watchlist and My List
           TabBar(
             labelColor: Theme.of(context).colorScheme.primary,
             unselectedLabelColor: Colors.grey,
@@ -37,20 +36,17 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
               ),
             ],
           ),
-          // Expanded to display TabBarView with the respective lists
           Expanded(
             child: TabBarView(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  padding: const EdgeInsets.all(16.0),
                   child: Watchlist(
                     movies: ref.watch(watchlistProvider),
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  padding: const EdgeInsets.all(16.0),
                   child: MyList(
                     movies: ref.watch(myListProvider),
                   ),

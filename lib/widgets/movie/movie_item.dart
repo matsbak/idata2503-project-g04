@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/providers/ratings_notifier.dart';
 import 'package:project/screens/movie_detail_screen.dart';
 import 'package:project/widgets/starbuilder.dart';
 
-class MovieItem extends StatelessWidget {
+/// Represents a Movie Card viewed on start page
+class MovieItem extends ConsumerWidget {
   const MovieItem({
     super.key,
     required this.movie,
@@ -21,15 +24,15 @@ class MovieItem extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final averageRating = ref.watch(ratingsProvider.notifier).averageRating;
     return InkWell(
       onTap: () => _onSelectedMovie(context),
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0), // Card corner radius
+          borderRadius: BorderRadius.circular(12.0),
         ),
-        clipBehavior: Clip
-            .antiAlias, // Clips the child widgets to the card's border radius
+        clipBehavior: Clip.antiAlias,
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: Row(
           children: [
@@ -44,10 +47,9 @@ class MovieItem extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 3, // Adjust flex for content
+              flex: 3,
               child: Padding(
-                padding: const EdgeInsets.all(
-                    16.0), // Padding around the text content
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -62,9 +64,9 @@ class MovieItem extends StatelessWidget {
                     const SizedBox(height: 10.0),
                     Row(
                       children: [
-                        StarBuilder(rating: movie.averageRating),
+                        StarBuilder(rating: averageRating),
                         Text(
-                          movie.averageRating.toString(),
+                          averageRating.toStringAsFixed(1),
                           style: const TextStyle(
                             color: Color.fromARGB(255, 230, 212, 50),
                           ),
