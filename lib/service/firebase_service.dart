@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:project/models/movie.dart';
@@ -189,6 +190,99 @@ class FirebaseService {
     } catch (error) {
       throw Exception("Error adding movie to mylist: $error");
     }
+  }
+
+  static Future<List<Movie>> fetchWatchlistMovies(String uid) async {
+    final List<Movie> movies = [];
+    try {
+      final url = Uri.https(baseUrl, 'movies.json');
+      final response = await http.get(url);
+      if (response != 'null') {
+        final Map<String, dynamic> movieData = json.decode(response.body);
+        //Until here it works
+        try {
+          final url = Uri.https(baseUrl, 'users/$uid/watchlist.json');
+          final response = await http.get(url);
+
+          if (response.statusCode != 200) {
+            throw Exception('Failed to fetch the watchlist');
+          }
+
+          if (response.body != 'null') {
+            final Map<String, dynamic> watchListData =
+                json.decode(response.body);
+            //Fetched watchlist data correct length
+            for (final entry in watchListData.entries) {
+              final movieId = entry.value;
+              for (final movieEntry in movieData.entries) {
+                if (movieEntry.value['id'] == movieId) {
+                  final movie = Movie(
+                      id: movieEntry.value['id'],
+                      title: movieEntry.value['title'],
+                      description: movieEntry.value['description'],
+                      posterPath: movieEntry.value['posterPath']);
+                  movie.poster = Image.network(
+                      'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.posterPath}');
+                  movies.add(movie);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          throw Exception('Error fetching watchlist: $error');
+        }
+      }
+    } catch (e) {
+      throw Exception('Error fetching: $e');
+    }
+    return movies;
+  }
+
+  /// Duplicated method this can be fixed , but for now it is like this
+  static Future<List<Movie>> fetchMylistMovies(String uid) async {
+    final List<Movie> movies = [];
+    try {
+      final url = Uri.https(baseUrl, 'movies.json');
+      final response = await http.get(url);
+      if (response != 'null') {
+        final Map<String, dynamic> movieData = json.decode(response.body);
+        //Until here it works
+        try {
+          final url = Uri.https(baseUrl, 'users/$uid/mylist.json');
+          final response = await http.get(url);
+
+          if (response.statusCode != 200) {
+            throw Exception('Failed to fetch the mylist');
+          }
+
+          if (response.body != 'null') {
+            final Map<String, dynamic> watchListData =
+                json.decode(response.body);
+            //Fetched watchlist data correct length
+            for (final entry in watchListData.entries) {
+              final movieId = entry.value;
+              for (final movieEntry in movieData.entries) {
+                if (movieEntry.value['id'] == movieId) {
+                  final movie = Movie(
+                      id: movieEntry.value['id'],
+                      title: movieEntry.value['title'],
+                      description: movieEntry.value['description'],
+                      posterPath: movieEntry.value['posterPath']);
+                  movie.poster = Image.network(
+                      'https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.posterPath}');
+                  movies.add(movie);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          throw Exception('Error fetching mylist: $error');
+        }
+      }
+    } catch (e) {
+      throw Exception('Error fetching: $e');
+    }
+    return movies;
   }
 
   /// Method to add a rating to a movie in backend
