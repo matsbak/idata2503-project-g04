@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project/forms/login_form.dart';
 import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
-import 'package:project/providers/lists_provider.dart';
 import 'settings_screen.dart';
 import 'package:project/widgets/rating_line_chart.dart';
 
@@ -55,22 +54,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
 
-    final bool isLoggedIn = authState.isLoggedIn;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
         actions: [
-          if (isLoggedIn)
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                );
-              },
-            ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
         ],
       ),
       body: authState.isLoggedIn
@@ -97,39 +93,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _buildLoggedInContent(BuildContext context, WidgetRef ref) {
     final user = FirebaseAuth.instance.currentUser;
-
     final String email = user?.email ?? 'user@example.com';
     final String username = email.split('@').first;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(height: 40),
-        // Profile Picture
-        GestureDetector(
-          onTap: _pickProfileImage,
-          child: CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey.shade300,
-            backgroundImage: _profileImagePath != null
-                ? Image.file(File(_profileImagePath!)).image
-                : null,
-            child: _profileImagePath == null
-                ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                : null,
-          ),
-        ),
-        const SizedBox(height: 16),
 
-        // Welcome Message
-        Text(
-          'Welcome, $username!', // Replace with dynamic username
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        const SizedBox(height: 20),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Profile Picture
+            GestureDetector(
+              onTap: _pickProfileImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.grey.shade300,
+                backgroundImage: _profileImagePath != null
+                    ? Image.file(File(_profileImagePath!)).image
+                    : null,
+                child: _profileImagePath == null
+                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                    : null,
+              ),
+            ),
+            const SizedBox(height: 16),
 
             // Welcome Message
             Text(
