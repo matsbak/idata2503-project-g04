@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
-import 'package:project/providers/authentication_provider.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/providers/ratings_notifier.dart';
 import 'package:project/service/firebase_service.dart';
@@ -41,7 +40,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
       if (uid != null) {
         // Add the movie to the user's Firestore document
         final firebaseKey =
-            await FirebaseService.addMovieToWatchlist(widget.movie, uid!);
+            await FirebaseService.addMovieToWatchlist(widget.movie, uid);
         if (firebaseKey != null) {
           ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
           ScaffoldMessenger.of(context).showSnackBar(
