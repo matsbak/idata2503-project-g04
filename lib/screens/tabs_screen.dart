@@ -99,15 +99,15 @@ class _TabsScreenState extends State<TabsScreen> {
             Text(
               'Fetching movies for you',
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.white,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
             ),
             Text(
               'Please wait...',
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.white,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
             ),
             const SizedBox(
@@ -124,6 +124,7 @@ class _TabsScreenState extends State<TabsScreen> {
         child: Text(
           _error!,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
         ),
