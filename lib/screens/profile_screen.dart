@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project/forms/login_form.dart';
 import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
@@ -91,6 +92,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildLoggedInContent(BuildContext context, WidgetRef ref) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    final String email = user?.email ?? 'user@example.com';
+    final String username = email.split('@').first;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,7 +119,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
         // Welcome Message
         Text(
-          'Welcome, User!', // Replace with dynamic username
+          'Welcome, $username!', // Replace with dynamic username
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: Colors.white,
