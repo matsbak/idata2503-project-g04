@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
-import 'package:project/service/firebase_service.dart';
+import 'package:project/services/firebase_service.dart';
 
 class AuthenticationProvider extends StateNotifier<AuthenticationState> {
   AuthenticationProvider(this.ref) : super(AuthenticationState.loggedOut());

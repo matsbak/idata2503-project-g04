@@ -3,7 +3,7 @@ import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
 import 'package:project/providers/authentication_provider.dart';
-import 'package:project/service/firebase_service.dart';
+import 'package:project/services/firebase_service.dart';
 
 class WatchlistNotifier extends StateNotifier<List<Movie>> {
   WatchlistNotifier() : super([]);
