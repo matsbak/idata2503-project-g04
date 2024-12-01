@@ -203,17 +203,28 @@ class _SearchScreenState extends State<SearchScreen> {
             )
           else if (_searchResults.isNotEmpty)
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
                 itemCount: _searchResults.length,
+                separatorBuilder: (ctx, index) => const Divider(color: Colors.grey),
                 itemBuilder: (ctx, index) {
                   final movie = _searchResults[index];
                   return ListTile(
-                    leading: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: movie.poster,
+                    leading: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 1.0),
+                      child: SizedBox(
+                        width: 40,
+                        height: 80,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: movie.poster ??
+                              Container(
+                                color: Colors.grey,
+                                child: const Icon(
+                                  Icons.movie,
+                                  color: Colors.white,
+                                ),
+                              ),
+                        ),
                       ),
                     ),
                     title: Text(movie.title,
