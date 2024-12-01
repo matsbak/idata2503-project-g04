@@ -48,10 +48,16 @@ class _TabsScreenState extends State<TabsScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        // TODO Test if right
-        _error = e.toString();
-      });
+      // Check if error is caused by failed data fetch or not
+      if (e.toString() == 'Exception') {
+        setState(() {
+          _error = 'Failed to fetch data';
+        });
+      } else {
+        setState(() {
+          _error = 'Something went wrong';
+        });
+      }
     } finally {
       client.close();
     }
