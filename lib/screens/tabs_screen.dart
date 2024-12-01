@@ -7,7 +7,7 @@ import 'package:project/screens/explore_screen.dart';
 import 'package:project/screens/lists_screen.dart';
 import 'package:project/screens/profile_screen.dart';
 import 'package:project/screens/search_screen.dart';
-import 'package:project/service/api_service.dart';
+import 'package:project/services/api_service.dart';
 import 'package:project/widgets/movie/movie_list.dart';
 
 class TabsScreen extends StatefulWidget {

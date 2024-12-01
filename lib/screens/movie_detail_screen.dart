@@ -5,7 +5,7 @@ import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/providers/ratings_notifier.dart';
-import 'package:project/service/firebase_service.dart';
+import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
 

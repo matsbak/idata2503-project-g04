@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/models/rating.dart';
-import 'package:project/service/firebase_service.dart';
+import 'package:project/services/firebase_service.dart';
 
 class RatingsNotifier extends StateNotifier<List<Rating>> {
   RatingsNotifier() : super([]);
