@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:project/providers/lists_provider.dart';
 import 'package:project/widgets/lists/my_list/my_list.dart';
 import 'package:project/widgets/lists/watchlist/watchlist.dart';
 
@@ -41,13 +41,11 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
             child: TabBarView(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  padding: EdgeInsets.all(16.0), // Adjust padding as needed
                   child: Watchlist(),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  padding: EdgeInsets.all(16.0), // Adjust padding as needed
                   child: MyList(),
                 ),
               ],

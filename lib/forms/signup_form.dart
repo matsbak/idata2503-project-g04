@@ -1,20 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 final _firebase = FirebaseAuth.instance;
 
 class SignupForm extends StatefulWidget {
-  final VoidCallback onSignupSuccess;
-  final VoidCallback onSwitchToLogin; // Callback to switch to login form
-
   const SignupForm({
     super.key,
     required this.onSignupSuccess,
     required this.onSwitchToLogin,
   });
 
+  final VoidCallback onSignupSuccess;
+  final VoidCallback onSwitchToLogin; // Callback to switch to login form
+
   @override
-  _SignupFormState createState() => _SignupFormState();
+  State<SignupForm> createState() {
+    return _SignupFormState();
+  }
 }
 
 class _SignupFormState extends State<SignupForm> {
@@ -25,15 +28,12 @@ class _SignupFormState extends State<SignupForm> {
   void _signup() async {
     if (_formKey.currentState!.validate()) {
       try {
-        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+        await _firebase.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
         widget.onSignupSuccess();
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
-          //....
-        }
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/forms/auth_utils.dart';
 
+import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 import 'package:project/providers/lists_provider.dart';
@@ -11,7 +11,6 @@ import 'package:project/providers/ratings_provider.dart';
 import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
-// TODO Make main content area scrollable instead of entire modal
 class MyListModal extends ConsumerStatefulWidget {
   const MyListModal(this.movie, {super.key});
 
@@ -28,9 +27,56 @@ class _MyListModalState extends ConsumerState<MyListModal> {
   var _enteredScore = 0.5;
   var _enteredReview = '';
 
+  @override
+  void initState() {
+    super.initState();
+    // Get the current Firebase user
+    final user = FirebaseAuth.instance.currentUser;
+    // Retrieve the user's email
+    final String email = user?.email ?? 'user@example.com';
+    _initializeRating(email);
+  }
+
+  void _initializeRating(String email) {
+    final existingRating = ref.read(ratingsProvider)[widget.movie.id];
+
+    if (existingRating != null) {
+      _enteredScore = existingRating.score;
+      _enteredReview = existingRating.review;
+    } else {
+      // Fetch ratings from backend
+      _loadRatingsFromBackend(email);
+    }
+  }
+
+  void _loadRatingsFromBackend(String email) async {
+    try {
+      // Fetch ratings from Firebase
+      final fetchedRatings =
+          await FirebaseService.fetchRatingForMovie(widget.movie.id);
+
+      if (fetchedRatings.isNotEmpty) {
+        for (final rating in fetchedRatings) {
+          if (rating.userId == email) {
+            ref
+                .read(ratingsProvider.notifier)
+                .addRating(widget.movie.id, rating);
+
+            setState(() {
+              _enteredScore = rating.score;
+              _enteredReview = rating.review;
+            });
+          }
+        }
+      }
+    } catch (error) {
+      throw Exception("Error loading ratings from backend");
+    }
+  }
+
   void _removeFromMyList(String title) async {
     try {
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid != null) {
         await FirebaseService.removeMovieFromMylist(widget.movie.id, uid);
         ref.read(myListProvider.notifier).removeFromMyList(widget.movie);
@@ -53,6 +99,7 @@ class _MyListModalState extends ConsumerState<MyListModal> {
   void _saveRating() async {
     final user = FirebaseAuth.instance.currentUser;
     final String email = user?.email ?? 'test@user.com';
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final newRating = Rating(
@@ -63,11 +110,21 @@ class _MyListModalState extends ConsumerState<MyListModal> {
       );
 
       try {
-        await FirebaseService.addRatingToMovie(widget.movie.id, newRating);
+        final existingRating =
+            ref.read(ratingsProvider.notifier).getRating(widget.movie.id);
 
-        ref
-            .read(ratingsProvider.notifier)
-            .addRating(widget.movie.id, newRating);
+        if (existingRating != null) {
+          await FirebaseService.updateRatingForMovie(
+              widget.movie.id, newRating);
+          ref
+              .read(ratingsProvider.notifier)
+              .addRating(widget.movie.id, newRating);
+        } else {
+          await FirebaseService.addRatingToMovie(widget.movie.id, newRating);
+          ref
+              .read(ratingsProvider.notifier)
+              .addRating(widget.movie.id, newRating);
+        }
 
         Navigator.of(context).pop(newRating);
       } catch (error) {
@@ -80,6 +137,8 @@ class _MyListModalState extends ConsumerState<MyListModal> {
 
   @override
   Widget build(BuildContext context) {
+    final existingRating = ref.watch(ratingsProvider)[widget.movie.id];
+
     return Container(
       margin: const EdgeInsets.only(
         top: 20.0,
@@ -136,10 +195,10 @@ class _MyListModalState extends ConsumerState<MyListModal> {
             ),
             Row(
               children: [
-                StarBuilder(rating: _enteredScore),
+                StarBuilder(rating: existingRating?.score ?? _enteredScore),
                 const SizedBox(width: 8),
                 Text(
-                  _enteredScore.toString(),
+                  (existingRating?.score ?? _enteredScore).toString(),
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Colors.white,
                       ),
@@ -190,6 +249,7 @@ class _MyListModalState extends ConsumerState<MyListModal> {
                     height: 8.0,
                   ),
                   TextFormField(
+                    initialValue: existingRating?.review ?? _enteredReview,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -244,8 +304,8 @@ class _MyListModalState extends ConsumerState<MyListModal> {
                       ),
                       FilledButton(
                         onPressed: _saveRating,
-                        child: const Text(
-                          'Save',
+                        child: Text(
+                          existingRating != null ? 'Update' : 'Save',
                         ),
                       ),
                     ],

@@ -10,7 +10,6 @@ import 'package:project/forms/login_form.dart';
 import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
 import 'settings_screen.dart';
-import 'package:project/widgets/rating_line_chart.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({
@@ -18,7 +17,9 @@ class ProfileScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() {
+    return _ProfileScreenState();
+  }
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
@@ -26,7 +27,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _showSignupForm = false;
   bool _isUploading = false;
   String? _previousUserId;
-  String? _profileImagePath;
   String? _profileImageUrl; // URL to uploaded image in firebase storage
 
   @override
@@ -40,10 +40,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) return;
 
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get();
+      final userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       final imageUrl = userDoc.data()?['profileImageUrl'] as String?;
 
@@ -73,18 +71,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         _isUploading = true;
       });
 
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid == null) {
         throw Exception('User not logged in.');
       }
 
-      final storageRef = FirebaseStorage.instance.ref().child('profile_images/$uid');
+      final storageRef =
+          FirebaseStorage.instance.ref().child('profile_images/$uid');
       await storageRef.putFile(file);
       final imageUrl = await storageRef.getDownloadURL();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .set({
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'profileImageUrl': imageUrl,
         'user': FirebaseAuth.instance.currentUser?.email,
       }, SetOptions(merge: true));
@@ -146,35 +142,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       body: authState.isLoggedIn
           ? _buildLoggedInContent(context, ref)
           : SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_showLoginForm)
-                LoginForm(
-                  onLoginSuccess: (String uid) {
-                    ref.read(authProvider.notifier).login(uid);
-                  },
-                  onSwitchToSignup: _toggleSignupForm,
-                )
-              else if (_showSignupForm)
-                SignupForm(
-                  onSignupSuccess: () {
-                    setState(() {
-                      _showSignupForm = false;
-                    });
-                  },
-                  onSwitchToLogin: _toggleLoginForm,
-                )
-              else
-                _buildLoggedOutContent(context),
-            ],
-          ),
-        ),
-      ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (_showLoginForm)
+                      LoginForm(
+                        onLoginSuccess: (String uid) {
+                          ref.read(authProvider.notifier).login(uid);
+                        },
+                        onSwitchToSignup: _toggleSignupForm,
+                      )
+                    else if (_showSignupForm)
+                      SignupForm(
+                        onSignupSuccess: () {
+                          setState(() {
+                            _showSignupForm = false;
+                          });
+                        },
+                        onSwitchToLogin: _toggleLoginForm,
+                      )
+                    else
+                      _buildLoggedOutContent(context),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -200,16 +196,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     : null,
                 child: _isUploading
                     ? const CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: Colors.blue,
-                )
+                        strokeWidth: 3,
+                        color: Colors.blue,
+                      )
                     : _profileImageUrl == null
-                    ? const Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Colors.grey,
-                )
-                    : null,
+                        ? const Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Colors.grey,
+                          )
+                        : null,
               ),
             ),
             const SizedBox(height: 16),

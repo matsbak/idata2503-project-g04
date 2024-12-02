@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'idata2503-project-g04.firebasestorage.app',
     iosBundleId: 'com.example.project',
   );
-
 }

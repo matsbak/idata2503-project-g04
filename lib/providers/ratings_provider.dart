@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:project/models/rating.dart';
 
 class RatingsNotifier extends StateNotifier<Map<int, Rating>> {

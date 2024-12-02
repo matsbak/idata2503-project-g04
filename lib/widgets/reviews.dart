@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:project/models/rating.dart';
 
 /// Represents the lists of reviews shown at the movie details screen
@@ -24,6 +25,8 @@ class Reviews extends StatelessWidget {
       itemCount: ratings.length,
       itemBuilder: (context, index) {
         final rating = ratings[index];
+        final email = rating.userId;
+        final String username = email.split('@').first;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Card(
@@ -54,7 +57,7 @@ class Reviews extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      "by ${rating.userId} on ${rating.date.toLocal().toString().split(' ')[0]}",
+                      "by $username on ${rating.date.toLocal().toString().split(' ')[0]}",
                       style: const TextStyle(
                         fontSize: 12,
                         fontStyle: FontStyle.italic,

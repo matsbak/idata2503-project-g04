@@ -370,12 +370,65 @@ class FirebaseService {
     }
   }
 
+  static Future<void> updateRatingForMovie(int movieId, Rating rating) async {
+    try {
+      final movieFirebaseKey = await getFirebaseKeyByMovie(movieId);
+      if (movieFirebaseKey == null) {
+        throw Exception("Movie not found in Firebase");
+      }
+
+      // Fetch all ratings to locate the wanted one
+      final ratingsUrl =
+          Uri.https(baseUrl, 'movies/$movieFirebaseKey/ratings.json');
+      final response = await http.get(ratingsUrl);
+
+      if (response.statusCode != 200) {
+        throw Exception("Failed to fetch ratings for movie");
+      }
+
+      // Decode ratings to find the target rating key
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      String? ratingKey;
+
+      data.forEach((key, value) {
+        if (value['userId'] == rating.userId) {
+          ratingKey = key;
+        }
+      });
+
+      if (ratingKey == null) {
+        throw Exception("Rating not found for user ${rating.userId}");
+      }
+
+      // Update the rating at the specific key
+      final updateUrl = Uri.https(
+        baseUrl,
+        'movies/$movieFirebaseKey/ratings/$ratingKey.json',
+      );
+      final updateResponse = await http.patch(
+        updateUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'score': rating.score,
+          'review': rating.review,
+          'date': rating.date.toIso8601String(),
+        }),
+      );
+
+      if (updateResponse.statusCode != 200) {
+        throw Exception("Failed to update rating");
+      }
+    } catch (error) {
+      throw Exception("Error updating rating: $error");
+    }
+  }
+
   static Future<List<Movie>> fetchWatchlistMovies(String uid) async {
     final List<Movie> movies = [];
     try {
       final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
-      if (response != 'null') {
+      if (response.body != 'null') {
         final Map<String, dynamic> movieData = json.decode(response.body);
         //Until here it works
         try {
@@ -422,7 +475,7 @@ class FirebaseService {
     try {
       final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
-      if (response != 'null') {
+      if (response.body != 'null') {
         final Map<String, dynamic> movieData = json.decode(response.body);
         //Until here it works
         try {

@@ -22,8 +22,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final _recentSearches = [];
   List<Movie> _searchResults = [];
-  List<String> _recentSearches = [];
   Timer? _debounce;
   bool _isSearching = false;
 
@@ -205,7 +205,8 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
               child: ListView.separated(
                 itemCount: _searchResults.length,
-                separatorBuilder: (ctx, index) => const Divider(color: Colors.grey),
+                separatorBuilder: (ctx, index) =>
+                    const Divider(color: Colors.grey),
                 itemBuilder: (ctx, index) {
                   final movie = _searchResults[index];
                   return ListTile(

@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/models/rating.dart';
+import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/lists/my_list/my_list_modal.dart';
 
 class MyListItem extends StatefulWidget {
@@ -12,10 +15,14 @@ class MyListItem extends StatefulWidget {
   final Movie movie;
 
   @override
-  State<MyListItem> createState() => _MyListItemState();
+  State<MyListItem> createState() {
+    return _MyListItemState();
+  }
 }
 
 class _MyListItemState extends State<MyListItem> {
+  double _userRating = 0.0;
+
   void _openMyListOverlay(Movie movie) {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -24,8 +31,26 @@ class _MyListItemState extends State<MyListItem> {
     );
   }
 
+  void _fetchUserRating(String email) async {
+    List<Rating> ratings =
+        await FirebaseService.fetchRatingForMovie(widget.movie.id);
+
+    for (final rating in ratings) {
+      if (rating.userId == email) {
+        _userRating = rating.score;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Get the current Firebase user
+    final user = FirebaseAuth.instance.currentUser;
+    // Retrieve the user's email
+    final String email = user?.email ?? 'user@example.com';
+
+    _fetchUserRating(email);
+
     return Card(
       margin: const EdgeInsets.symmetric(
         vertical: 4.0,
@@ -58,7 +83,7 @@ class _MyListItemState extends State<MyListItem> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.movie.title, 
+                        widget.movie.title,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 20.0,
@@ -68,14 +93,13 @@ class _MyListItemState extends State<MyListItem> {
                       ),
                     ),
                     const Spacer(),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.star_border),
-                        SizedBox(width: 2.0),
+                        const Icon(Icons.star_border),
+                        const SizedBox(width: 2.0),
                         Text(
-                          // TODO Replace with user rating
-                          'TODO',
-                          style: TextStyle(
+                          _userRating.toString(),
+                          style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

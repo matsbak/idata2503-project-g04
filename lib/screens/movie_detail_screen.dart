@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
@@ -19,7 +21,9 @@ class MovieDetailScreen extends ConsumerStatefulWidget {
   final Movie movie;
 
   @override
-  ConsumerState<MovieDetailScreen> createState() => _MovieDetailScreenState();
+  ConsumerState<MovieDetailScreen> createState() {
+    return _MovieDetailScreenState();
+  }
 }
 
 class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
@@ -54,7 +58,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
   /// Adds a movie to the watch list
   Future<void> _addToWatchList(BuildContext context, WidgetRef ref) async {
     try {
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid != null) {
         final firebaseKey =
             await FirebaseService.addMovieToWatchlist(widget.movie, uid);
@@ -73,24 +77,6 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to add movie to watchlist: $error")),
       );
-    }
-  }
-
-  // TODO DEPRECATED
-  /// Removes a movie from the watch list
-  Future<void> _removeFromWatchList(BuildContext context, WidgetRef ref) async {
-    try {
-      final uid = getUidIfLoggedIn(ref);
-      if (uid != null) {
-        await FirebaseService.removeMovieFromWatchlist(widget.movie.id, uid);
-        ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Movie removed from watchlist')));
-      }
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Failed to remove movie from watchlist: $error"),
-      ));
     }
   }
 

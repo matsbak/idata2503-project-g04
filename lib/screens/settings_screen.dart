@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:project/providers/authentication_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,61 +27,61 @@ class SettingsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-
               const Text(
                 'ACCOUNT',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.grey),
               ),
               const SizedBox(height: 16),
               _buildEditableField(
-                  context: context,
-                  label: 'Email Adress',
-                  value: email,
-                  onTap: () => _showChangeEmailDialog(context, user),
+                context: context,
+                label: 'Email Adress',
+                value: email,
+                onTap: () => _showChangeEmailDialog(context, user),
               ),
               const Divider(height: 1, color: Colors.grey),
-
               _buildEditableField(
-                  context: context,
-                  label: 'Change Password',
-                  value: '*********',
-                  onTap: () => _showChangePasswordDialog(context, user),
+                context: context,
+                label: 'Change Password',
+                value: '*********',
+                onTap: () => _showChangePasswordDialog(context, user),
               ),
               const Divider(height: 1, color: Colors.grey),
-
               const SizedBox(height: 16),
-
               const Text(
                 'Account Management',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.grey),
               ),
               const SizedBox(height: 16),
-
               _buildEditableField(
-                  context: context,
-                  label: 'Delete Account',
-                  value: '',
-                  onTap: () => _showDeleteAccountDialog(context, ref, user),
-                  isDestructive: true,
+                context: context,
+                label: 'Delete Account',
+                value: '',
+                onTap: () => _showDeleteAccountDialog(context, ref, user),
+                isDestructive: true,
               ),
               const Divider(height: 1, color: Colors.grey),
-
               _buildEditableField(
-                  context: context,
-                  label: 'Logout',
-                  value: '',
-                  isDestructive: true,
-                  onTap: () {
-                    ref.read(authProvider.notifier).logout();
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
+                context: context,
+                label: 'Logout',
+                value: '',
+                isDestructive: true,
+                onTap: () {
+                  ref.read(authProvider.notifier).logout();
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   // Build Editable Field
@@ -146,11 +148,13 @@ class SettingsScreen extends ConsumerWidget {
               onPressed: () async {
                 try {
                   if (user != null) {
-                    await user.verifyBeforeUpdateEmail(emailController.text.trim());
+                    await user
+                        .verifyBeforeUpdateEmail(emailController.text.trim());
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Verification email sent to the new address'),
+                        content:
+                            Text('Verification email sent to the new address'),
                       ),
                     );
                   }
@@ -197,7 +201,8 @@ class SettingsScreen extends ConsumerWidget {
                   }
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Password updated successfully')),
+                    const SnackBar(
+                        content: Text('Password updated successfully')),
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -214,7 +219,8 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   // Show Delete Account Dialog
-  void _showDeleteAccountDialog(BuildContext context, WidgetRef ref, User? user) {
+  void _showDeleteAccountDialog(
+      BuildContext context, WidgetRef ref, User? user) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
