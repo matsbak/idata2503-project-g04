@@ -1,8 +1,11 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:project/forms/auth_utils.dart';
 import 'package:project/forms/login_form.dart';
 import 'package:project/forms/signup_form.dart';
 import 'package:project/providers/authentication_provider.dart';
@@ -21,18 +24,81 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _showLoginForm = false;
   bool _showSignupForm = false;
+  bool _isUploading = false;
+  String? _previousUserId;
   String? _profileImagePath;
+  String? _profileImageUrl; // URL to uploaded image in firebase storage
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileImageUrl();
+  }
+
+  Future<void> _fetchProfileImageUrl() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) return;
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .get();
+
+      final imageUrl = userDoc.data()?['profileImageUrl'] as String?;
+
+      setState(() {
+        _profileImageUrl = imageUrl; // Update with the new user's profile image
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to fetch profile image: $e'),
+        ),
+      );
+    }
+  }
 
   Future<void> _pickProfileImage() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowCompression: true,
-    );
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile == null) {
+        return;
+      }
 
-    if (result != null && result.files.single.path != null) {
+      final File file = File(pickedFile.path);
+
       setState(() {
-        _profileImagePath = result.files.single.path;
+        _isUploading = true;
       });
+
+      final uid = getUidIfLoggedIn(ref);
+      if (uid == null) {
+        throw Exception('User not logged in.');
+      }
+
+      final storageRef = FirebaseStorage.instance.ref().child('profile_images/$uid');
+      await storageRef.putFile(file);
+      final imageUrl = await storageRef.getDownloadURL();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set({
+        'profileImageUrl': imageUrl,
+        'user': FirebaseAuth.instance.currentUser?.email,
+      }, SetOptions(merge: true));
+
+      setState(() {
+        _profileImageUrl = imageUrl;
+        _isUploading = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to upload profile image: $e'),
+        ),
+      );
     }
   }
 
@@ -53,6 +119,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null && (user.uid != _previousUserId)) {
+      _previousUserId = user.uid;
+      _fetchProfileImageUrl();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -123,11 +195,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.grey.shade300,
-                backgroundImage: _profileImagePath != null
-                    ? Image.file(File(_profileImagePath!)).image
+                backgroundImage: _profileImageUrl != null
+                    ? NetworkImage(_profileImageUrl!)
                     : null,
-                child: _profileImagePath == null
-                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                child: _isUploading
+                    ? const CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: Colors.blue,
+                )
+                    : _profileImageUrl == null
+                    ? const Icon(
+                  Icons.person,
+                  size: 60,
+                  color: Colors.grey,
+                )
                     : null,
               ),
             ),
