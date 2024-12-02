@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -8,16 +9,17 @@ import 'package:project/models/rating.dart';
 class FirebaseService {
   static String baseUrl = dotenv.env['FIREBASE_BASE_URL'] ?? '';
 
-  /// Fetch Firebase key for a movie by its ID within a specific user's collection
+  /// Fetch Firebase key for a movie by its ID within a specific user's list
   static Future<String?> getMovieFirebaseKeyByUserId(
       int movieId, String uid, String list) async {
     try {
       final url = Uri.https(baseUrl, 'users/$uid/$list.json');
       final response = await http.get(url);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.body != 'null') {
         final Map<String, dynamic> moviesData =
             json.decode(response.body) as Map<String, dynamic>;
+
         for (var entry in moviesData.entries) {
           if (entry.value == movieId) {
             return entry.key; // Return the Firebase key
@@ -36,9 +38,10 @@ class FirebaseService {
       final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.body != 'null') {
         final Map<String, dynamic> movieData =
             json.decode(response.body) as Map<String, dynamic>;
+
         for (var entry in movieData.entries) {
           if (entry.value['id'] == movieId) {
             return entry.key;
@@ -80,6 +83,7 @@ class FirebaseService {
             'id': movie.id,
             'title': movie.title,
             'description': movie.description,
+            'genres': movie.genres,
             'posterPath': movie.posterPath,
           }),
         );
@@ -116,7 +120,8 @@ class FirebaseService {
     // Removes movie from Firebase if no user has it in either of its lists
     if (!isStored) {
       try {
-        final url = Uri.https(baseUrl, 'movies.json');
+        final String? firebaseKey = await getFirebaseKeyByMovie(movieId);
+        final url = Uri.https(baseUrl, 'movies/$firebaseKey.json');
         await http.delete(url);
       } catch (error) {
         throw Exception("Error deleting from movies: $error");
@@ -127,47 +132,140 @@ class FirebaseService {
   /// Method to send http DELETE request to backend (Firebase) to remove a movie from a user's collection
   static Future<void> removeMovieFromWatchlist(int movieId, String uid) async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      final String email = user?.email ?? 'unknown@example.com';
       final firebaseKey =
-          await getMovieFirebaseKeyByUserId(movieId, uid, 'watchlist');
+          await _fetchFirebaseKeyForUserMovie(movieId, uid, 'watchlist');
       if (firebaseKey == null) {
         throw Exception("Movie not found in Firebase");
       }
 
-      final url = Uri.https(baseUrl, 'users/$uid/watchlist/$firebaseKey.json');
-      final response = await http.delete(url);
+      // Remove the movie from the user's "watchlist"
+      await _removeMovieFromUserList(uid, 'watchlist', firebaseKey);
 
-      if (response.statusCode != 200) {
-        throw Exception(
-          "Failed to delete movie from Firebase. Status code: ${response.statusCode}",
-        );
+      final List<Rating> ratings = await fetchRatingForMovie(movieId);
+      if (ratings.isEmpty) {
+        await removeMovieFromFirebase(movieId);
+      } else {
+        final movieFirebaseKey = await getFirebaseKeyByMovie(movieId);
+        if (movieFirebaseKey != null) {
+          await _removeUserRating(movieFirebaseKey, email);
+          await _checkAndDeleteMovieIfNoRatingsLeft(movieId);
+        } else {
+          throw Exception("movie not found in Firebase");
+        }
       }
     } catch (error) {
       throw Exception("Error deleting movie: $error");
     }
-    removeMovieFromFirebase(movieId);
   }
 
-  //Removes a movie from mylist
+  //Removes a movie from the user's "Mylist" and handles ratings appropriately
   static Future<void> removeMovieFromMylist(int movieId, String uid) async {
     try {
+      // Fetch the logged-in user's email
+      final user = FirebaseAuth.instance.currentUser;
+      final String email = user?.email ?? 'unknown@example.com';
+
+      // Fetch the Firebase key for the movie in the user's "mylist"
       final firebaseKey =
-          await getMovieFirebaseKeyByUserId(movieId, uid, 'mylist');
+          await _fetchFirebaseKeyForUserMovie(movieId, uid, 'mylist');
       if (firebaseKey == null) {
-        throw Exception("Movie not found in Firebase");
+        throw Exception("Movie not found in user's mylist.");
       }
 
-      final url = Uri.https(baseUrl, 'users/$uid/mylist/$firebaseKey.json');
-      final response = await http.delete(url);
+      // Remove the movie from the user's "mylist"
+      await _removeMovieFromUserList(uid, 'mylist', firebaseKey);
 
-      if (response.statusCode != 200) {
-        throw Exception(
-          "Failed to delete movie from Firebase. Status code: ${response.statusCode}",
-        );
+      // Check if the movie has ratings
+      final List<Rating> ratings = await fetchRatingForMovie(movieId);
+      if (ratings.isEmpty) {
+        await removeMovieFromFirebase(movieId);
+      } else {
+        final movieFirebaseKey = await getFirebaseKeyByMovie(movieId);
+        if (movieFirebaseKey != null) {
+          await _removeUserRating(movieFirebaseKey, email);
+          await _checkAndDeleteMovieIfNoRatingsLeft(movieId);
+        } else {
+          throw Exception("Movie not found in Firebase.");
+        }
       }
     } catch (error) {
-      throw Exception("Error deleting movie: $error");
+      throw Exception("Error deleting movie from mylist: $error");
     }
-    removeMovieFromFirebase(movieId);
+  }
+
+  /// Fetch the Firebase key for a user's movie in a spesific list
+  static Future<String?> _fetchFirebaseKeyForUserMovie(
+      int movieId, String uid, String listType) async {
+    return await getMovieFirebaseKeyByUserId(movieId, uid, listType);
+  }
+
+  /// Remove a movie from a user's list
+  static Future<void> _removeMovieFromUserList(
+      String uid, String listType, String firebaseKey) async {
+    final url = Uri.https(baseUrl, 'users/$uid/$listType/$firebaseKey.json');
+    final response = await http.delete(url);
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          "Failed to delete movie from $listType. Status code. ${response.statusCode}");
+    }
+  }
+
+  /// Remove a user's specific rating for a movie
+  static Future<void> _removeUserRating(
+      String movieFirebaseKey, String email) async {
+    final userRatingEntry = await _getUserRatingEntry(movieFirebaseKey, email);
+
+    if (userRatingEntry != null) {
+      final ratingUrl = Uri.https(
+        baseUrl,
+        'movies/$movieFirebaseKey/ratings/${userRatingEntry.key}.json',
+      );
+      final deleteResponse = await http.delete(ratingUrl);
+
+      if (deleteResponse.statusCode != 200) {
+        throw Exception(
+            "Failed to delete the user's rating. Status code: ${deleteResponse.statusCode}");
+      }
+    }
+  }
+
+  /// Check if any ratings are left for a movie and delete the movie if none exist.
+  static Future<void> _checkAndDeleteMovieIfNoRatingsLeft(int movieId) async {
+    final List<Rating> updatedRatings = await fetchRatingForMovie(movieId);
+    if (updatedRatings.isEmpty) {
+      await removeMovieFromFirebase(movieId);
+    }
+  }
+
+  /// Helper method to get the Firebase entry key for a user's rating.
+  static Future<MapEntry<String, dynamic>?> _getUserRatingEntry(
+      String movieFirebaseKey, String userEmail) async {
+    try {
+      final url = Uri.https(baseUrl, 'movies/$movieFirebaseKey/ratings.json');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200 && response.body != 'null') {
+        final Map<String, dynamic>? ratingsData =
+            json.decode(response.body) as Map<String, dynamic>?;
+
+        if (ratingsData != null) {
+          try {
+            final userRatingEntry = ratingsData.entries.firstWhere(
+              (entry) => entry.value['userId'] == userEmail,
+            );
+            return userRatingEntry;
+          } catch (error) {
+            return null;
+          }
+        }
+      }
+      return null;
+    } catch (error) {
+      throw Exception("Error fetching user rating entry: $error");
+    }
   }
 
   /// Method to send http POST request to backend (Firebase) to add a movie to a user's collection
@@ -343,7 +441,10 @@ class FirebaseService {
   /// Method to fetch ratings for a movie
   static Future<List<Rating>> fetchRatingForMovie(int movieId) async {
     try {
-      final url = Uri.https(baseUrl, 'movies/$movieId/ratings.json');
+      final firebaseKey = await getFirebaseKeyByMovie(movieId);
+      if (firebaseKey == null) return [];
+
+      final url = Uri.https(baseUrl, 'movies/$firebaseKey/ratings.json');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {

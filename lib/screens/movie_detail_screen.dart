@@ -156,26 +156,27 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (isInLists) {
-                      _removeFromWatchList(context, ref);
-                    } else {
-                      _addToWatchList(context, ref);
-                    }
-                  },
+                  onPressed: isInLists
+                      ? null
+                      : () {
+                          _addToWatchList(context, ref);
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isInLists
-                        ? Theme.of(context).colorScheme.errorContainer
+                        ? Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.38)
                         : Theme.of(context).colorScheme.secondaryContainer,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12.0, vertical: 8.0),
                   ),
                   icon: Icon(
-                    isInLists ? Icons.delete : Icons.add,
+                    isInLists ? Icons.check : Icons.add,
                     color: Colors.white,
                   ),
                   label: Text(
-                    isInLists ? 'Remove from Watchlist' : 'Add to Watchlist',
+                    isInLists ? 'Added To list' : 'Add to Watchlist',
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
