@@ -48,10 +48,16 @@ class _TabsScreenState extends State<TabsScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        // TODO Test if right
-        _error = e.toString();
-      });
+      // Check if error is caused by failed data fetch or not
+      if (e.toString() == 'Exception') {
+        setState(() {
+          _error = 'Failed to fetch data';
+        });
+      } else {
+        setState(() {
+          _error = 'Something went wrong';
+        });
+      }
     } finally {
       client.close();
     }
@@ -86,8 +92,30 @@ class _TabsScreenState extends State<TabsScreen> {
     Widget content = activePage;
 
     if (_isLoading) {
-      content = const Center(
-        child: CircularProgressIndicator(),
+      content = Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Fetching movies for you',
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            Text(
+              'Please wait...',
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+            const CircularProgressIndicator(),
+          ],
+        ),
       );
     }
 

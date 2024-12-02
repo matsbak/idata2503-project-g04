@@ -23,50 +23,6 @@ class ApiService {
       final url = Uri.parse(
         '$_baseUrl/popular?language=en-US&page=$i',
       );
-      try {
-        final response = await client.get(
-          url,
-          headers: {
-            'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
-            'accept': 'application/json',
-          },
-        );
-
-        if (response.statusCode >= 400) {
-          throw Exception('Failed to fetch movie data');
-        }
-
-        final Map<String, dynamic> movieData = json.decode(response.body);
-        final List<Movie> loadedMovies = [];
-
-        for (final movie in movieData['results']) {
-          final loadedMovie = Movie(
-            id: movie['id'],
-            title: movie['title'],
-            description: movie['overview'],
-            posterPath: movie['poster_path'],
-          );
-
-          loadedMovies.add(loadedMovie);
-        }
-
-        movies = [...movies, ...loadedMovies];
-      } catch (e) {
-        throw Exception('Something went wrong when fetching movie data');
-      }
-    }
-
-    return movies;
-  }
-
-  /// Fetches all genres for the specified movie from the API. Each movie can have multiple genres.
-  static Future<List<String>> fetchMovieGenres(Movie movie, Client client) async {
-    List<String> genres = [];
-
-    final url = Uri.parse(
-      '$_baseUrl/${movie.id}?language=en-US',
-    );
-    try {
       final response = await client.get(
         url,
         headers: {
@@ -76,20 +32,57 @@ class ApiService {
       );
 
       if (response.statusCode >= 400) {
-        throw Exception('Failed to fetch genre data');
+        throw Exception();
       }
 
-      final Map<String, dynamic> movieDetailsData = json.decode(response.body);
-      final List<String> loadedGenres = [];
+      final Map<String, dynamic> movieData = json.decode(response.body);
+      final List<Movie> loadedMovies = [];
 
-      for (final genre in movieDetailsData['genres']) {
-        loadedGenres.add(genre['name']);
+      for (final movie in movieData['results']) {
+        final loadedMovie = Movie(
+          id: movie['id'],
+          title: movie['title'],
+          description: movie['overview'],
+          posterPath: movie['poster_path'],
+        );
+
+        loadedMovies.add(loadedMovie);
       }
 
-      genres = [...loadedGenres];
-    } catch (e) {
-      throw Exception('Something went wrong when fetching genre data');
+      movies = [...movies, ...loadedMovies];
     }
+
+    return movies;
+  }
+
+  /// Fetches all genres for the specified movie from the API. Each movie can have multiple genres.
+  static Future<List<String>> fetchMovieGenres(
+      Movie movie, Client client) async {
+    List<String> genres = [];
+
+    final url = Uri.parse(
+      '$_baseUrl/${movie.id}?language=en-US',
+    );
+    final response = await client.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${dotenv.env['API_KEY']}',
+        'accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode >= 400) {
+      throw Exception();
+    }
+
+    final Map<String, dynamic> movieDetailsData = json.decode(response.body);
+    final List<String> loadedGenres = [];
+
+    for (final genre in movieDetailsData['genres']) {
+      loadedGenres.add(genre['name']);
+    }
+
+    genres = [...loadedGenres];
 
     return genres;
   }
