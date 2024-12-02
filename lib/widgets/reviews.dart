@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:project/models/rating.dart';
 
 /// Represents the lists of reviews shown at the movie details screen

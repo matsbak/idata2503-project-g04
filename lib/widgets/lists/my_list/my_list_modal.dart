@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/forms/auth_utils.dart';
 
+import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 import 'package:project/providers/lists_provider.dart';
@@ -76,7 +76,7 @@ class _MyListModalState extends ConsumerState<MyListModal> {
 
   void _removeFromMyList(String title) async {
     try {
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid != null) {
         await FirebaseService.removeMovieFromMylist(widget.movie.id, uid);
         ref.read(myListProvider.notifier).removeFromMyList(widget.movie);

@@ -1,16 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
-import 'package:project/providers/authentication_provider.dart';
-import 'package:project/services/firebase_service.dart';
 
 class WatchlistNotifier extends StateNotifier<List<Movie>> {
   WatchlistNotifier() : super([]);
 
   void fillWatchList(List<Movie> movies) {
     state = [...state, ...movies];
-    //state = movies;
   }
 
   void clearWatchlist() {
@@ -33,7 +29,6 @@ class MyListNotifier extends StateNotifier<List<Movie>> {
 
   void fillMyList(List<Movie> movies) {
     state = [...state, ...movies];
-    //state = movies;
   }
 
   void clearMylist() {

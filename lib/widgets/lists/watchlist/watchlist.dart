@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:project/models/movie.dart';
 import 'package:project/providers/lists_provider.dart';
 import 'package:project/widgets/lists/watchlist/watchlist_item.dart';
 

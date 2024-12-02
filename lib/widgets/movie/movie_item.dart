@@ -23,8 +23,7 @@ class MovieItem extends ConsumerWidget {
     List<Rating> ratings = [...movie.ratings];
     double avg = 0.0;
 
-    Rating? rating =
-        ref.watch(ratingsProvider.notifier).getRating(movie.id);
+    Rating? rating = ref.watch(ratingsProvider.notifier).getRating(movie.id);
     if (rating != null) {
       ratings = [...movie.ratings, rating];
     }

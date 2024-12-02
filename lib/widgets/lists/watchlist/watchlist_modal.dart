@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/forms/auth_utils.dart';
 
+import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 import 'package:project/providers/lists_provider.dart';
@@ -26,7 +26,7 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
   bool isAddedToMyList = false;
 
   void _removeFromWatchlist(String title) async {
-    final uid = getUidIfLoggedIn(ref);
+    final uid = AuthUtils.getUidIfLoggedIn(ref);
     if (uid != null) {
       await FirebaseService.removeMovieFromWatchlist(widget.movie.id, uid);
       ref.read(watchlistProvider.notifier).removeFromWatchlist(widget.movie);
@@ -42,7 +42,7 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
 
   Future<void> _addToMyList(BuildContext context, WidgetRef ref) async {
     try {
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid != null) {
         final firebaseKey =
             await FirebaseService.addMovieToMylist(widget.movie, uid);
@@ -74,7 +74,7 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
   //Removes a movie form the mylist, and adds it back to wtachlist
   Future<void> _removeFromMyList(BuildContext context, WidgetRef ref) async {
     try {
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid != null) {
         await FirebaseService.removeMovieFromMylist(widget.movie.id, uid);
         ref.read(myListProvider.notifier).removeFromMyList(widget.movie);

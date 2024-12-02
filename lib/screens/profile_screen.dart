@@ -17,7 +17,9 @@ class ProfileScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() {
+    return _ProfileScreenState();
+  }
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
@@ -69,7 +71,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         _isUploading = true;
       });
 
-      final uid = getUidIfLoggedIn(ref);
+      final uid = AuthUtils.getUidIfLoggedIn(ref);
       if (uid == null) {
         throw Exception('User not logged in.');
       }

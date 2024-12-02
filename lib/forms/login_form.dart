@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 //used in sigunupform as well, needs to be refactored
 final _firebase = FirebaseAuth.instance;
 
 class LoginForm extends StatefulWidget {
-  final void Function(String uid) onLoginSuccess;
-  final VoidCallback onSwitchToSignup; // Callback to switch to signup form
-
   const LoginForm({
     super.key,
     required this.onLoginSuccess,
     required this.onSwitchToSignup,
   });
 
+  final void Function(String uid) onLoginSuccess;
+  final VoidCallback onSwitchToSignup; // Callback to switch to signup form
+
   @override
-  _LoginFormState createState() => _LoginFormState();
+  State<LoginForm> createState() {
+    return _LoginFormState();
+  }
 }
 
 class _LoginFormState extends State<LoginForm> {
@@ -36,9 +39,7 @@ class _LoginFormState extends State<LoginForm> {
           widget.onLoginSuccess(uid);
         }
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'email') {
-          //....
-        }
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.message ?? 'Authentication failed.'),
