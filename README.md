@@ -38,10 +38,6 @@ for more information.
 ### Home Screen
 <img src="./assets/images/homescreen.png" alt="Home Screen" width="200">
 
-### Movie Details
-![Comming soon](path/to/movie_details.png)
-
-
 ## Installation
 
 ### Prerequisites:
