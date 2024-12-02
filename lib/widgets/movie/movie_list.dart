@@ -6,9 +6,11 @@ import 'package:project/widgets/movie/movie_item.dart';
 class MovieList extends StatelessWidget {
   const MovieList({
     super.key,
+    required this.header,
     required this.movies,
   });
 
+  final String header;
   final List<Movie> movies;
 
   @override
@@ -18,9 +20,9 @@ class MovieList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Popular Movies',
-            style: TextStyle(
+          Text(
+            header,
+            style: const TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
               color: Colors.white,

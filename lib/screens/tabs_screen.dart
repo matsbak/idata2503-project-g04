@@ -9,6 +9,7 @@ import 'package:project/screens/profile_screen.dart';
 import 'package:project/screens/search_screen.dart';
 import 'package:project/services/api_service.dart';
 import 'package:project/services/firebase_service.dart';
+import 'package:project/widgets/main_drawer.dart';
 import 'package:project/widgets/movie/movie_list.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -22,6 +23,11 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   List<Movie> _registeredMovies = [];
+
+  List<Movie> _apiMovies = [];
+  List<Movie> _firebaseMovies = [];
+
+  String _header = 'Popular Movies';
   int _selectedPageIndex = 0;
   bool _isLoading = true;
   String? _error;
@@ -46,18 +52,25 @@ class _TabsScreenState extends State<TabsScreen> {
 
       // Fetch all movies stored in Firebase
       final List<Movie> firebaseMovies = await FirebaseService.getMovies();
+      // Define temporary list for movies only stored in Firebase
+      final List<Movie> exFirebaseMovies = [];
       // Replace fetched movies with movies in Firebase if they are stored there
       for (Movie movie in fetchedMovies) {
         for (Movie storedMovie in firebaseMovies) {
           if (movie.id == storedMovie.id) {
             fetchedMovies[fetchedMovies.indexOf(movie)] = storedMovie;
+          } else {
+            exFirebaseMovies.add(storedMovie);
           }
         }
       }
 
-      // Apply fetched movies to registered movies
+      _apiMovies = [...fetchedMovies];
+      _firebaseMovies = [...exFirebaseMovies];
+
+      // Initially apply only API movies to registered movies
       setState(() {
-        _registeredMovies = [...fetchedMovies];
+        _registeredMovies = [..._apiMovies];
         _isLoading = false;
       });
     } catch (e) {
@@ -68,7 +81,7 @@ class _TabsScreenState extends State<TabsScreen> {
         });
       } else {
         setState(() {
-          _error = 'Something went wrong $e';
+          _error = 'Something went wrong';
         });
       }
     } finally {
@@ -88,9 +101,27 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  /// Sets registered movies to a list determined by the specified argument. If the specified
+  /// argument is 'all', both movies fetched from the API and Firebase are included. If the
+  /// specified argument is 'popular', only movies fetched from the API are included.
+  void _setRegisteredMovies(String arg) {
+    Navigator.of(context).pop();
+    if (arg == 'all') {
+      setState(() {
+        _registeredMovies = [..._apiMovies, ..._firebaseMovies];
+        _header = 'All Movies';
+      });
+    } else {
+      setState(() {
+        _header = 'Popular Movies';
+        _registeredMovies = [..._apiMovies];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget activePage = MovieList(movies: _registeredMovies);
+    Widget activePage = MovieList(header: _header, movies: _registeredMovies);
 
     if (_selectedPageIndex == 1) {
       activePage = ExploreScreen(movies: _registeredMovies);
@@ -172,6 +203,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       backgroundColor: const Color.fromARGB(255, 35, 30, 30),
       body: content,
+      drawer: MainDrawer(onSelectMovies: _setRegisteredMovies),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         currentIndex: _selectedPageIndex < 4 ? _selectedPageIndex : 0,
