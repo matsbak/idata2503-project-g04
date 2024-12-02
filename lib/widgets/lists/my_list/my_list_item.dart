@@ -68,14 +68,14 @@ class _MyListItemState extends State<MyListItem> {
                       ),
                     ),
                     const Spacer(),
-                    Row(
+                    const Row(
                       children: [
-                        const Icon(Icons.star_border),
-                        const SizedBox(width: 2.0),
+                        Icon(Icons.star_border),
+                        SizedBox(width: 2.0),
                         Text(
                           // TODO Replace with user rating
-                          "${widget.movie.averageRating}",
-                          style: const TextStyle(
+                          'TODO',
+                          style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

@@ -7,6 +7,7 @@ import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/providers/ratings_provider.dart';
 import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
@@ -63,6 +64,10 @@ class _MyListModalState extends ConsumerState<MyListModal> {
 
       try {
         await FirebaseService.addRatingToMovie(widget.movie.id, newRating);
+
+        ref
+            .read(ratingsProvider.notifier)
+            .addRating(widget.movie.id, newRating);
 
         Navigator.of(context).pop(newRating);
       } catch (error) {

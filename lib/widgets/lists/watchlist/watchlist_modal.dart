@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project/forms/auth_utils.dart';
 
 import 'package:project/models/movie.dart';
+import 'package:project/models/rating.dart';
 import 'package:project/providers/lists_provider.dart';
+import 'package:project/providers/ratings_provider.dart';
 import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
@@ -22,6 +24,7 @@ class WatchlistModal extends ConsumerStatefulWidget {
 
 class _WatchlistModalState extends ConsumerState<WatchlistModal> {
   bool isAddedToMyList = false;
+
   void _removeFromWatchlist(String title) async {
     final uid = getUidIfLoggedIn(ref);
     if (uid != null) {
@@ -88,8 +91,31 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
     }
   }
 
+  /// Calculates the average of all movie ratings. This methods first checks if the user has added
+  /// a rating during the application lifecycle, by checking the ratings provider. If a rating has
+  /// been added, it is included in the calculation for all movie ratings.
+  double _calculateAverageRating() {
+    List<Rating> ratings = [...widget.movie.ratings];
+    double avg = 0.0;
+
+    Rating? rating =
+        ref.watch(ratingsProvider.notifier).getRating(widget.movie.id);
+    if (rating != null) {
+      ratings = [...widget.movie.ratings, rating];
+    }
+
+    if (ratings.isNotEmpty) {
+      avg =
+          ratings.map((r) => r.score).reduce((a, b) => a + b) / ratings.length;
+    }
+
+    return double.parse(avg.toStringAsFixed(2));
+  }
+
   @override
   Widget build(BuildContext context) {
+    double averageRating = _calculateAverageRating();
+
     return Container(
       margin: const EdgeInsets.only(
         top: 20.0,
@@ -144,12 +170,12 @@ class _WatchlistModalState extends ConsumerState<WatchlistModal> {
             ),
             Row(
               children: [
-                StarBuilder(rating: widget.movie.averageRating),
+                StarBuilder(rating: averageRating),
                 const SizedBox(
                   width: 4.0,
                 ),
                 Text(
-                  widget.movie.averageRating.toString(),
+                  averageRating.toString(),
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Colors.white,
                       ),

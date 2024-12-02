@@ -13,14 +13,14 @@ class WatchlistNotifier extends StateNotifier<List<Movie>> {
     //state = movies;
   }
 
+  void clearWatchlist() {
+    state = [];
+  }
+
   void addToWatchlist(Movie movie) {
     if (!state.contains(movie)) {
       state = [...state, movie];
     }
-  }
-
-  void clearWatchlist() {
-    state = [];
   }
 
   void removeFromWatchlist(Movie movie) {
