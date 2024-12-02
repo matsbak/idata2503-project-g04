@@ -9,7 +9,7 @@ import 'package:project/models/movie.dart';
 
 /// The ApiService class represents a service class for mainly fetching movie data from the API.
 class ApiService {
-  static const _pages = 10;
+  static const _pages = 1;
   static const _baseUrl = 'https://api.themoviedb.org/3/movie';
   static const _posterBaseUrl =
       'https://image.tmdb.org/t/p/w600_and_h900_bestv2';
