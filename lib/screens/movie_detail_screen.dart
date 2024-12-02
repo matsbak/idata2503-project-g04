@@ -4,7 +4,7 @@ import 'package:project/forms/auth_utils.dart';
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
 import 'package:project/providers/lists_provider.dart';
-import 'package:project/providers/ratings_notifier.dart';
+import 'package:project/providers/ratings_provider.dart';
 import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/reviews.dart';
 import 'package:project/widgets/starbuilder.dart';
@@ -23,12 +23,32 @@ class MovieDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(ratingsProvider.notifier).fetchRatings(widget.movie.id);
-    });
+  /// Initializes the ratings to be used in the widget. This method first checks what ratings are
+  /// already present in the movie object, and then appends the rating in the ratings provider if
+  /// it is present for the movie.
+  List<Rating> _initializeRatings() {
+    List<Rating> ratings = [...widget.movie.ratings];
+
+    Rating? rating =
+        ref.watch(ratingsProvider.notifier).getRating(widget.movie.id);
+    if (rating != null) {
+      ratings = [...ratings, rating];
+    }
+
+    return ratings;
+  }
+
+  /// Calculates the average of all ratings. The ratings are the initial ratings.
+  double _calculateAverageRating() {
+    List<Rating> ratings = _initializeRatings();
+    double avg = 0.0;
+
+    if (ratings.isNotEmpty) {
+      avg =
+          ratings.map((r) => r.score).reduce((a, b) => a + b) / ratings.length;
+    }
+
+    return double.parse(avg.toStringAsFixed(2));
   }
 
   /// Adds a movie to the watch list
@@ -37,7 +57,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
       final uid = getUidIfLoggedIn(ref);
       if (uid != null) {
         final firebaseKey =
-        await FirebaseService.addMovieToWatchlist(widget.movie, uid);
+            await FirebaseService.addMovieToWatchlist(widget.movie, uid);
         if (firebaseKey != null) {
           ref.read(watchlistProvider.notifier).addToWatchlist(widget.movie);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -56,6 +76,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
     }
   }
 
+  // TODO DEPRECATED
   /// Removes a movie from the watch list
   Future<void> _removeFromWatchList(BuildContext context, WidgetRef ref) async {
     try {
@@ -75,22 +96,25 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Lists providers
     final watchlist = ref.watch(watchlistProvider);
     final myList = ref.watch(myListProvider);
+
     final isInLists =
         watchlist.contains(widget.movie) || myList.contains(widget.movie);
 
-    final ratings = ref.watch(ratingsProvider);
-    final double averageRating = ref.watch(ratingsProvider.notifier).averageRating;
+    // Ratings providers
+    final ratings = _initializeRatings();
+    final averageRating = _calculateAverageRating();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.movie.title,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
         ),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -101,8 +125,10 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: orientation == Orientation.landscape
-                  ? _buildLandscapeLayout(context, isInLists, ratings, averageRating)
-                  : _buildPortraitLayout(context, isInLists, ratings, averageRating),
+                  ? _buildLandscapeLayout(
+                      context, isInLists, ratings, averageRating)
+                  : _buildPortraitLayout(
+                      context, isInLists, ratings, averageRating),
             ),
           );
         },
@@ -191,10 +217,10 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
         const SizedBox(height: 12),
         ElevatedButton.icon(
           onPressed: isInLists
-              ? null // Disable button if movie already is in the list
+              ? null // Disables button if movie is already present in lists
               : () {
-            _addToWatchList(context, ref);
-          },
+                  _addToWatchList(context, ref);
+                },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
           ),
@@ -222,8 +248,7 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
           children: widget.movie.genres.map((genre) {
             return Chip(
               label: Text(genre),
-              backgroundColor:
-              Theme.of(context).colorScheme.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             );
           }).toList(),
         ),
@@ -231,8 +256,8 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
         Text(
           widget.movie.description,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
-          ),
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
         ),
         const SizedBox(height: 12),
         Reviews(ratings: ratings),

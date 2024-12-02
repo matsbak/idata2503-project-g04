@@ -8,6 +8,7 @@ import 'package:project/screens/lists_screen.dart';
 import 'package:project/screens/profile_screen.dart';
 import 'package:project/screens/search_screen.dart';
 import 'package:project/services/api_service.dart';
+import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/movie/movie_list.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -42,7 +43,19 @@ class _TabsScreenState extends State<TabsScreen> {
         movie.genres = await ApiService.fetchMovieGenres(movie, client);
         movie.poster = ApiService.fetchMoviePoster(movie);
       }
-      // Apply fetched movie to registered movies
+
+      // Fetch all movies stored in Firebase
+      final List<Movie> firebaseMovies = await FirebaseService.getMovies();
+      // Replace fetched movies with movies in Firebase if they are stored there
+      for (Movie movie in fetchedMovies) {
+        for (Movie storedMovie in firebaseMovies) {
+          if (movie.id == storedMovie.id) {
+            fetchedMovies[fetchedMovies.indexOf(movie)] = storedMovie;
+          }
+        }
+      }
+
+      // Apply fetched movies to registered movies
       setState(() {
         _registeredMovies = [...fetchedMovies];
         _isLoading = false;
@@ -55,7 +68,7 @@ class _TabsScreenState extends State<TabsScreen> {
         });
       } else {
         setState(() {
-          _error = 'Something went wrong';
+          _error = 'Something went wrong $e';
         });
       }
     } finally {

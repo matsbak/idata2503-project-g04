@@ -1,13 +1,71 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:project/models/movie.dart';
 import 'package:project/models/rating.dart';
+import 'package:project/services/api_service.dart';
 
 class FirebaseService {
   static String baseUrl = dotenv.env['FIREBASE_BASE_URL'] ?? '';
+
+  /// Fetches all movies from Firebase.
+  static Future<List<Movie>> getMovies() async {
+    List<Movie> movies = [];
+
+    try {
+      final url = Uri.https(baseUrl, 'movies.json');
+      final response = await http.get(url);
+
+      if (response.body != 'null') {
+        final Map<String, dynamic> moviesData = json.decode(response.body);
+        final List<Movie> loadedMovies = [];
+
+        for (final entry in moviesData.entries) {
+          final loadedMovie = Movie(
+            id: entry.value['id'],
+            title: entry.value['title'],
+            description: entry.value['description'],
+            posterPath: entry.value['posterPath'],
+            genres: [...entry.value['genres']],
+          );
+
+          loadedMovie.poster = ApiService.fetchMoviePoster(loadedMovie);
+
+          // Adds each rating to the loaded movie if they exist
+          if (entry.value['ratings'] != null) {
+            final ratingsData = entry.value['ratings'] as Map<String, dynamic>;
+            final List<Rating> ratings = [];
+
+            for (final ratingEntry in ratingsData.entries) {
+              final rating = Rating(
+                score: ratingEntry.value['score'],
+                review: ratingEntry.value['review'],
+                userId: ratingEntry.value['userId'],
+                date: DateTime.parse(ratingEntry.value['date']),
+              );
+
+              ratings.add(rating);
+            }
+
+            loadedMovie.ratings = [...ratings];
+          }
+
+          loadedMovies.add(loadedMovie);
+        }
+
+        movies = [...loadedMovies];
+      }
+    } catch (error) {
+      throw Exception('Error fetching movies: $error');
+    }
+
+    return movies;
+  }
 
   /// Fetch Firebase key for a movie by its ID within a specific user's list
   static Future<String?> getMovieFirebaseKeyByUserId(
@@ -28,7 +86,7 @@ class FirebaseService {
       }
       return null; // Return null if not found.
     } catch (error) {
-      throw Exception("Error fetching Firebase key: $error");
+      throw Exception('Error fetching Firebase key: $error');
     }
   }
 
