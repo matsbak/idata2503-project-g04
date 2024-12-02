@@ -18,70 +18,68 @@ class SettingsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
 
-            // Email Field
-            const Text(
-              'ACCOUNT',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
-            ),
-            const SizedBox(height: 10),
-            _buildEditableField(
-              context: context,
-              label: 'Email Address',
-              value: email,
-              onTap: () => _showChangeEmailDialog(context, user),
-            ),
-            const Divider(height: 1, color: Colors.grey),
+              const Text(
+                'ACCOUNT',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(height: 16),
+              _buildEditableField(
+                  context: context,
+                  label: 'Email Adress',
+                  value: email,
+                  onTap: () => _showChangeEmailDialog(context, user),
+              ),
+              const Divider(height: 1, color: Colors.grey),
 
-            // Password Field
-            _buildEditableField(
-              context: context,
-              label: 'Change Password',
-              value: '••••••••',
-              onTap: () => _showChangePasswordDialog(context, user),
-            ),
-            const Divider(height: 1, color: Colors.grey),
+              _buildEditableField(
+                  context: context,
+                  label: 'Change Password',
+                  value: '*********',
+                  onTap: () => _showChangePasswordDialog(context, user),
+              ),
+              const Divider(height: 1, color: Colors.grey),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-            const Text(
-              'ACCOUNT MANAGEMENT',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
-            ),
-            const SizedBox(height: 10),
+              const Text(
+                'Account Management',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(height: 16),
 
-            // Delete Account Field
-            _buildEditableField(
-              context: context,
-              label: 'Delete Account',
-              value: '',
-              isDestructive: true,
-              onTap: () => _showDeleteAccountDialog(context, ref, user),
-            ),
-            const Divider(height: 1, color: Colors.grey),
+              _buildEditableField(
+                  context: context,
+                  label: 'Delete Account',
+                  value: '',
+                  onTap: () => _showDeleteAccountDialog(context, ref, user),
+                  isDestructive: true,
+              ),
+              const Divider(height: 1, color: Colors.grey),
 
-            // Logout Field
-            _buildEditableField(
-              context: context,
-              label: 'Logout',
-              value: '',
-              isDestructive: true,
-              onTap: () {
-                ref.read(authProvider.notifier).logout();
-                FirebaseAuth.instance.signOut();
-                Navigator.pop(context);
-              },
+              _buildEditableField(
+                  context: context,
+                  label: 'Logout',
+                  value: '',
+                  isDestructive: true,
+                  onTap: () {
+                    ref.read(authProvider.notifier).logout();
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-    );
+      );
   }
 
   // Build Editable Field

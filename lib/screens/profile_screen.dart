@@ -58,36 +58,51 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       appBar: AppBar(
         title: const Text('Profile'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-          ),
+          if (authState.isLoggedIn)
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                );
+              },
+            ),
         ],
       ),
       body: authState.isLoggedIn
           ? _buildLoggedInContent(context, ref)
-          : _showLoginForm
-              ? LoginForm(
+          : SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_showLoginForm)
+                LoginForm(
                   onLoginSuccess: (String uid) {
                     ref.read(authProvider.notifier).login(uid);
                   },
                   onSwitchToSignup: _toggleSignupForm,
                 )
-              : _showSignupForm
-                  ? SignupForm(
-                      onSignupSuccess: () {
-                        setState(() {
-                          _showSignupForm = false;
-                        });
-                      },
-                      onSwitchToLogin: _toggleLoginForm,
-                    )
-                  : _buildLoggedOutContent(context),
+              else if (_showSignupForm)
+                SignupForm(
+                  onSignupSuccess: () {
+                    setState(() {
+                      _showSignupForm = false;
+                    });
+                  },
+                  onSwitchToLogin: _toggleLoginForm,
+                )
+              else
+                _buildLoggedOutContent(context),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
