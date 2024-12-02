@@ -224,70 +224,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             const SizedBox(height: 40),
 
-            // Stats Section
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Recently Added
-                Column(
-                  children: [
-                    Text(
-                      'Recently Added',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Inception',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 40,
-                  child: VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                    width: 40, // Space between items
-                  ),
-                ),
-                // Avg Rating
-                Column(
-                  children: [
-                    Text(
-                      'Avg Rating',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '4.5',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
             const SizedBox(height: 40),
 
-            // Chart Section
-            const SizedBox(
-              height: 250,
-              child: RatingLineChart(),
-            ),
             const SizedBox(height: 20),
 
             // Logout Button
