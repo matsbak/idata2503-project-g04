@@ -41,13 +41,11 @@ class _ListsScreenState extends ConsumerState<ListsScreen> {
             child: TabBarView(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  padding: EdgeInsets.all(16.0), // Adjust padding as needed
                   child: Watchlist(),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.all(16.0), // Adjust padding as needed
+                  padding: EdgeInsets.all(16.0), // Adjust padding as needed
                   child: MyList(),
                 ),
               ],

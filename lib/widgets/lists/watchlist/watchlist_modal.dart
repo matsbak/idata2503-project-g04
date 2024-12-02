@@ -10,7 +10,6 @@ import 'package:project/providers/ratings_provider.dart';
 import 'package:project/services/firebase_service.dart';
 import 'package:project/widgets/starbuilder.dart';
 
-// TODO Make main content area scrollable instead of entire modal
 class WatchlistModal extends ConsumerStatefulWidget {
   const WatchlistModal(this.movie, {super.key});
 

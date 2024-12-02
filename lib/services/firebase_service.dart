@@ -428,7 +428,7 @@ class FirebaseService {
     try {
       final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
-      if (response != 'null') {
+      if (response.body != 'null') {
         final Map<String, dynamic> movieData = json.decode(response.body);
         //Until here it works
         try {
@@ -475,7 +475,7 @@ class FirebaseService {
     try {
       final url = Uri.https(baseUrl, 'movies.json');
       final response = await http.get(url);
-      if (response != 'null') {
+      if (response.body != 'null') {
         final Map<String, dynamic> movieData = json.decode(response.body);
         //Until here it works
         try {
